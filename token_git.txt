@@ -1,9 +1,0 @@
-git remote set-url origin https://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@github.com/elievelton/universidade.git
-
-comando do Gtihub:
-
-Git add nome_do_aquivo
-git add .    #para adicionar tudo
-git commit -m "commit message"
-git commit -a
-git push
