@@ -9,7 +9,8 @@ Conj_n_pag *inserir_paginas(Conj_n_pag *raiz, int numero);
 Sub_termos *inserir_no_sub(Sub_termos *raiz, char titulo[], Conj_n_pag *conj);
 Termos_principais *buscar_termo_principal(Termos_principais *raiz, char titulo[]);
 Sub_termos *buscar_termo_secundario(Sub_termos *raiz, char titulo[]);
-void mostrar_principal(Termos_principais *prin, Conj_n_pag *conje);
+void mostrar_principal(Termos_principais *prin);
 void liberarMemoria(Termos_principais *raiz);
+void mostrar_sub(Sub_termos *raiz, Conj_n_pag *teste);
 
 void mostrar_principal2(Conj_n_pag *raiz);

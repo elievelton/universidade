@@ -24,24 +24,28 @@ int main()
     pag = inserir_paginas(pag, 12);
     pag = inserir_paginas(pag, 19);
     pag = inserir_paginas(pag, 21);
-    pag1 = inserir_paginas(pag, 13);
-    pag1 = inserir_paginas(pag, 15);
-    pag1 = inserir_paginas(pag, 7);
 
-    pag2 = inserir_paginas(pag, 87);
-    pag2 = inserir_paginas(pag, 192);
-    pag2 = inserir_paginas(pag, 211);
+    pag1 = inserir_paginas(pag1, 13);
+    pag1 = inserir_paginas(pag1, 15);
+    pag1 = inserir_paginas(pag1, 7);
 
-    pag3 = inserir_paginas(pag, 135);
-    pag3 = inserir_paginas(pag, 159);
-    pag3 = inserir_paginas(pag, 77);
+    pag2 = inserir_paginas(pag2, 87);
+    pag2 = inserir_paginas(pag2, 192);
+    pag2 = inserir_paginas(pag2, 211);
+
+    pag3 = inserir_paginas(pag3, 135);
+    pag3 = inserir_paginas(pag3, 159);
+    pag3 = inserir_paginas(pag3, 77);
+
     subtermos = inserir_no_sub(subtermos, "motor", pag1);
     subtermos2 = inserir_no_sub(subtermos2, "telhado", pag);
+    
     termos_principais = inserir_no(termos_principais, "carro", subtermos, pag2);
     termos_principais = inserir_no(termos_principais, "casa", subtermos2, pag3);
 
-    mostrar_principal(termos_principais,pag);
+    mostrar_principal(termos_principais);
     mostrar_principal2(pag);
+    printf("\n");
     liberarMemoria(termos_principais);
 
     return 0;

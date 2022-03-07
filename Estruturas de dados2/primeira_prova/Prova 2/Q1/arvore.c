@@ -186,22 +186,21 @@ Sub_termos *buscar_termo_secundario(Sub_termos *raiz, char titulo[])
     }
     return NULL;
 }
-void mostrar_principal(Termos_principais *prin ,Conj_n_pag *pag)
+void mostrar_principal(Termos_principais *prin)
 {
     if (prin!=NULL)
     {
         
-
-        printf("%s  ", prin->titulo);
-       
-        
-        
+        mostrar_principal(prin->esquerdo);
+        printf("%s  ", prin->titulo);     
+        printf("(%d,", prin->con_pg->num_paginas);
+        printf(")"); 
+        printf("\n"); 
         printf("----%s", prin->subtermos->titulo);
-        printf("(%d,", prin->subtermos->con_pg->num_paginas);
+        printf(" (%d,", prin->subtermos->con_pg->num_paginas);
         printf(")\n");
-        mostrar_principal(prin->esquerdo,pag);
-        mostrar_principal(prin->direito,pag);
-        printf("poco");
+        
+        mostrar_principal(prin->direito);
     }
     printf("\n");
 }
@@ -218,9 +217,9 @@ void mostrar_principal2(Conj_n_pag *raiz)
 {
     if (raiz != NULL)
     {
-         
-        printf("%d (", raiz->num_paginas);
         mostrar_principal2(raiz->esquerdo);
+        printf("%d (", raiz->num_paginas);
+        
         mostrar_principal2(raiz->direito);
         printf(")");
         //printf("\n");
