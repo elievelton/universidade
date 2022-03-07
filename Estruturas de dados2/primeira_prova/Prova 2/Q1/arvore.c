@@ -40,6 +40,13 @@ Conj_n_pag *inicializar3()
 
 Termos_principais *inserir_no(Termos_principais *raiz, char titulo[], Sub_termos *sub, Conj_n_pag *conj)
 {
+    /*Termos_principais *aux;
+
+    aux = buscar_termo_principal(raiz,raiz->titulo);
+    if(aux->titulo ==raiz->titulo){
+       raiz = inserir_no_sub(aux,sub->titulo,conj);
+    }*/
+
 
     if (raiz == NULL)
     {
