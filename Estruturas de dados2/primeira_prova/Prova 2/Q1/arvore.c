@@ -193,11 +193,13 @@ void mostrar_principal(Termos_principais *prin)
         
         mostrar_principal(prin->esquerdo);
         printf("%s  ", prin->titulo);     
-        printf("(%d,", prin->con_pg->num_paginas);
+        printf("(");
+        mostrar_principal2(prin->con_pg);
         printf(")"); 
-        printf("\n"); 
-        printf("----%s", prin->subtermos->titulo);
-        printf(" (%d,", prin->subtermos->con_pg->num_paginas);
+        printf("\n");
+        printf("----%s ", prin->subtermos->titulo);
+        printf("(");
+        mostrar_principal2(prin->subtermos->con_pg);
         printf(")\n");
         
         mostrar_principal(prin->direito);
@@ -218,10 +220,9 @@ void mostrar_principal2(Conj_n_pag *raiz)
     if (raiz != NULL)
     {
         mostrar_principal2(raiz->esquerdo);
-        printf("%d (", raiz->num_paginas);
+        printf("%d, ", raiz->num_paginas);
         
         mostrar_principal2(raiz->direito);
-        printf(")");
         //printf("\n");
     }
 }
