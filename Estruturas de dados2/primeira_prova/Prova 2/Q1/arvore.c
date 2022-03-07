@@ -37,7 +37,7 @@ Conj_n_pag *inicializar3()
 {
     return NULL;
 }
-
+// função para inserir os termos principas
 Termos_principais *inserir_no(Termos_principais *raiz, char titulo[], Sub_termos *sub, Conj_n_pag *conj)
 {
     /*Termos_principais *aux;
@@ -75,6 +75,7 @@ Termos_principais *inserir_no(Termos_principais *raiz, char titulo[], Sub_termos
     }
     return raiz;
 }
+// função para inserir os subtermos  do termo principal
 Sub_termos *inserir_no_sub(Sub_termos *raiz, char titulo[], Conj_n_pag *conj)
 {
 
@@ -104,6 +105,7 @@ Sub_termos *inserir_no_sub(Sub_termos *raiz, char titulo[], Conj_n_pag *conj)
     }
     return raiz;
 }
+// função para inserir os numeros das paginas que os termos principais ou secundarios aparecem
 Conj_n_pag *inserir_paginas(Conj_n_pag *raiz, int numero)
 {
 
@@ -158,6 +160,7 @@ Conj_n_pag *inserir_paginas_sub(Conj_n_pag *raiz, int numero)
     }
     return raiz;
 }
+// Função para buscar termos principal
 Termos_principais *buscar_termo_principal(Termos_principais *raiz, char titulo[])
 {
     if (raiz)
@@ -175,7 +178,7 @@ Termos_principais *buscar_termo_principal(Termos_principais *raiz, char titulo[]
     }
     return NULL;
 }
-
+// Função para buscar termos secundarios
 Sub_termos *buscar_termo_secundario(Sub_termos *raiz, char titulo[])
 {
     if (raiz)
@@ -193,6 +196,7 @@ Sub_termos *buscar_termo_secundario(Sub_termos *raiz, char titulo[])
     }
     return NULL;
 }
+//Função para mostrar principal
 void mostrar_principal(Termos_principais *prin)
 {
     if (prin!=NULL)
@@ -222,6 +226,7 @@ void liberarMemoria(Termos_principais *raiz)
         free(raiz);
     }
 }
+//Função para mostrar os numeros das paginas usada na função mostrar principal
 void mostrar_principal2(Conj_n_pag *raiz)
 {
     if (raiz != NULL)
