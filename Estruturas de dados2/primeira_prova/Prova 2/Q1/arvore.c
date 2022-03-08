@@ -15,6 +15,7 @@ struct sub_termos
     Conj_n_pag *con_pg;
     Sub_termos *esquerdo, *direito;
 };
+
 struct termos_principais
 {
     char titulo[80];
@@ -37,34 +38,27 @@ Conj_n_pag *inicializar3()
 {
     return NULL;
 }
+
 // função para inserir os termos principas
 Termos_principais *inserir_no(Termos_principais *raiz, char titulo[], Sub_termos *sub, Conj_n_pag *conj)
 {
-    /*Termos_principais *aux;
-
-    aux = buscar_termo_principal(raiz,raiz->titulo);
-    if(aux->titulo ==raiz->titulo){
-       raiz = inserir_no_sub(aux,sub->titulo,conj);
-    }*/
-
-
     if (raiz == NULL)
     {
-
-        Termos_principais *aux;
-        aux = (Termos_principais *)malloc(sizeof(Termos_principais));
-        strcpy(aux->titulo, titulo);
-        aux->subtermos = sub;
-        aux->con_pg = conj;
-        aux->esquerdo = NULL;
-        aux->direito = NULL;
-        return aux;
+        raiz = (Termos_principais *)calloc(sizeof(Termos_principais), 1);
+        strcpy(raiz->titulo, titulo);
+        raiz->subtermos = sub;
+        raiz->con_pg = conj;
     }
     else
     {
         int comp;
         comp = strcmp(titulo, raiz->titulo);
-        if (comp < 0)
+
+        if (comp == 0)
+        {
+            raiz->subtermos = inserir_no_sub(raiz->subtermos, sub->titulo, conj);
+        }
+        else if (comp < 0)
         {
             raiz->esquerdo = inserir_no(raiz->esquerdo, titulo, sub, conj);
         }
@@ -75,20 +69,16 @@ Termos_principais *inserir_no(Termos_principais *raiz, char titulo[], Sub_termos
     }
     return raiz;
 }
+
 // função para inserir os subtermos  do termo principal
 Sub_termos *inserir_no_sub(Sub_termos *raiz, char titulo[], Conj_n_pag *conj)
 {
 
     if (raiz == NULL)
     {
-
-        Sub_termos *aux;
-        aux = (Sub_termos *)malloc(sizeof(Sub_termos));
-        strcpy(aux->titulo, titulo);
-        aux->con_pg = conj;
-        aux->esquerdo = NULL;
-        aux->direito = NULL;
-        return aux;
+        raiz = (Sub_termos *)calloc(sizeof(Sub_termos), 1);
+        strcpy(raiz->titulo, titulo);
+        raiz->con_pg = conj;
     }
     else
     {
@@ -105,23 +95,17 @@ Sub_termos *inserir_no_sub(Sub_termos *raiz, char titulo[], Conj_n_pag *conj)
     }
     return raiz;
 }
+
 // função para inserir os numeros das paginas que os termos principais ou secundarios aparecem
 Conj_n_pag *inserir_paginas(Conj_n_pag *raiz, int numero)
 {
-
     if (raiz == NULL)
     {
-
-        Conj_n_pag *aux;
-        aux = (Conj_n_pag *)malloc(sizeof(Conj_n_pag));
-        aux->num_paginas = numero;
-        aux->esquerdo = NULL;
-        aux->direito = NULL;
-        return aux;
+        raiz = (Conj_n_pag *)calloc(sizeof(Conj_n_pag), 1);
+        raiz->num_paginas = numero;
     }
     else
     {
-
         if (numero < raiz->num_paginas)
         {
             raiz->esquerdo = inserir_paginas(raiz->esquerdo, numero);
@@ -133,108 +117,120 @@ Conj_n_pag *inserir_paginas(Conj_n_pag *raiz, int numero)
     }
     return raiz;
 }
-Conj_n_pag *inserir_paginas_sub(Conj_n_pag *raiz, int numero)
-{
 
-    if (raiz == NULL)
-    {
-
-        Conj_n_pag *aux;
-        aux = (Conj_n_pag *)malloc(sizeof(Conj_n_pag));
-        aux->num_paginas = numero;
-        aux->esquerdo = NULL;
-        aux->direito = NULL;
-        return aux;
-    }
-    else
-    {
-
-        if (numero < raiz->num_paginas)
-        {
-            raiz->esquerdo = inserir_paginas_sub(raiz->esquerdo, numero);
-        }
-        else
-        {
-            raiz->direito = inserir_paginas_sub(raiz->direito, numero);
-        }
-    }
-    return raiz;
-}
 // Função para buscar termos principal
 Termos_principais *buscar_termo_principal(Termos_principais *raiz, char titulo[])
 {
+    Termos_principais *res = raiz;
     if (raiz)
     {
         int comp;
         comp = strcmp(titulo, raiz->titulo);
-        if (comp == 0)
 
-            return raiz;
-
-        else if (comp < 0)
-            return buscar_termo_principal(raiz->esquerdo, titulo);
-        else
-            return buscar_termo_principal(raiz->direito, titulo);
+        if (comp < 0)
+        {
+            res = buscar_termo_principal(raiz->esquerdo, titulo);
+        }
+        else if (comp > 0)
+        {
+            res = buscar_termo_principal(raiz->direito, titulo);
+        }
     }
-    return NULL;
+    return res;
 }
+
 // Função para buscar termos secundarios
 Sub_termos *buscar_termo_secundario(Sub_termos *raiz, char titulo[])
 {
-    if (raiz)
+    Sub_termos *res = raiz;
+    if (raiz != NULL)
     {
         int comp;
         comp = strcmp(titulo, raiz->titulo);
-        if (comp == 0)
 
-            return raiz;
-
-        else if (comp < 0)
-            return buscar_termo_secundario(raiz->esquerdo, titulo);
-        else
-            return buscar_termo_secundario(raiz->direito, titulo);
+        if (comp < 0)
+        {
+            res = buscar_termo_secundario(raiz->esquerdo, titulo);
+        }
+        else if (comp > 0)
+        {
+            res = buscar_termo_secundario(raiz->direito, titulo);
+        }
     }
-    return NULL;
+    return res;
 }
-//Função para mostrar principal
-void mostrar_principal(Termos_principais *prin)
+
+void mostrar_paginas(Conj_n_pag *raiz)
 {
-    if (prin!=NULL)
+    if (raiz != NULL)
     {
-        
-        mostrar_principal(prin->esquerdo);
-        printf("%s  ", prin->titulo);     
+        mostrar_paginas(raiz->esquerdo);
+        printf("%d, ", raiz->num_paginas);
+        mostrar_paginas(raiz->direito);
+    }
+}
+
+void mostrar_sub_termos(Sub_termos *sub)
+{
+    if (sub != NULL)
+    {
+        mostrar_sub_termos(sub->esquerdo);
+        printf("----%s ", sub->titulo);
         printf("(");
-        mostrar_principal2(prin->con_pg);
-        printf(")"); 
-        printf("\n");
-        printf("----%s ", prin->subtermos->titulo);
-        printf("(");
-        mostrar_principal2(prin->subtermos->con_pg);
+        mostrar_paginas(sub->con_pg);
         printf(")\n");
-        
-        mostrar_principal(prin->direito);
+        mostrar_sub_termos(sub->direito);
+    }
+}
+
+// Função para mostrar principal
+void mostrar_termos(Termos_principais *termos)
+{
+    if (termos != NULL)
+    {
+        mostrar_termos(termos->esquerdo);
+        printf("%s  ", termos->titulo);
+        printf("(");
+        mostrar_paginas(termos->con_pg);
+        printf(")");
+        printf("\n");
+        mostrar_sub_termos(termos->subtermos);
+        mostrar_termos(termos->direito);
     }
     printf("\n");
 }
-void liberarMemoria(Termos_principais *raiz)
+
+// Função para mostrar os numeros das paginas usada na função mostrar principal
+
+void liberar_pag(Conj_n_pag *raiz)
 {
     if (raiz != NULL)
     {
-        liberarMemoria((*raiz).esquerdo);
-        liberarMemoria((*raiz).direito);
+        liberar_pag(raiz->esquerdo);
+        liberar_pag(raiz->direito);
         free(raiz);
     }
 }
-//Função para mostrar os numeros das paginas usada na função mostrar principal
-void mostrar_principal2(Conj_n_pag *raiz)
+
+void liberar_sub_termos(Sub_termos *raiz)
 {
     if (raiz != NULL)
     {
-        mostrar_principal2(raiz->esquerdo);
-        printf("%d, ", raiz->num_paginas);
-        
-        mostrar_principal2(raiz->direito);
-        //printf("\n");
+        liberar_pag(raiz->con_pg);
+        liberar_sub_termos(raiz->esquerdo);
+        liberar_sub_termos(raiz->direito);
+        free(raiz);
+    }
+}
+
+void liberar_memoria(Termos_principais *raiz)
+{
+    if (raiz != NULL)
+    {
+        liberar_sub_termos(raiz->subtermos);
+        liberar_pag(raiz->con_pg);
+        liberar_memoria(raiz->esquerdo);
+        liberar_memoria(raiz->direito);
+        free(raiz);
     }
 }
