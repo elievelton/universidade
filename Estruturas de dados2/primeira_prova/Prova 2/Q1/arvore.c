@@ -39,38 +39,6 @@ Conj_n_pag *inicializar3()
     return NULL;
 }
 
-// função para inserir os termos principas
-Termos_principais *inserir_no(Termos_principais *raiz, char titulo[], Sub_termos *sub, Conj_n_pag *conj)
-{
-    if (raiz == NULL)
-    {
-        raiz = (Termos_principais *)calloc(sizeof(Termos_principais), 1);
-        strcpy(raiz->titulo, titulo);
-        raiz->subtermos = sub;
-        raiz->con_pg = conj;
-    }
-    else
-    {
-        int comp;
-        comp = strcmp(titulo, raiz->titulo);
-
-        if (comp == 0)
-        {
-            raiz->subtermos = inserir_no_sub(raiz->subtermos, sub->titulo, conj);
-        }
-        else if (comp < 0)
-        {
-            raiz->esquerdo = inserir_no(raiz->esquerdo, titulo, sub, conj);
-        }
-        else
-        {
-            raiz->direito = inserir_no(raiz->direito, titulo, sub, conj);
-        }
-    }
-    return raiz;
-}
-
-// função para inserir os subtermos  do termo principal
 Sub_termos *inserir_no_sub(Sub_termos *raiz, char titulo[], Conj_n_pag *conj)
 {
 
@@ -95,6 +63,71 @@ Sub_termos *inserir_no_sub(Sub_termos *raiz, char titulo[], Conj_n_pag *conj)
     }
     return raiz;
 }
+
+// função para inserir os termos principas
+Termos_principais *inserir_termo(Termos_principais *raiz, char titulo[], Sub_termos *sub, Conj_n_pag *conj)
+{
+    if (raiz == NULL)
+    {
+        raiz = (Termos_principais *)calloc(sizeof(Termos_principais), 1);
+        strcpy(raiz->titulo, titulo);
+        raiz->subtermos = sub;
+        raiz->con_pg = conj;
+    }
+    else
+    {
+        int comp;
+        comp = strcmp(titulo, raiz->titulo);
+
+        if (comp == 0)
+        {
+            raiz->subtermos = inserir_no_sub(raiz->subtermos, sub->titulo, conj);
+        }
+        else if (comp < 0)
+        {
+            raiz->esquerdo = inserir_termo(raiz->esquerdo, titulo, sub, conj);
+        }
+        else
+        {
+            raiz->direito = inserir_termo(raiz->direito, titulo, sub, conj);
+        }
+    }
+    return raiz;
+}
+
+Termos_principais *inserir_sub_termo(Termos_principais *raiz, char termo[], char sub_termo[], Conj_n_pag *sub_termo_pag)
+{
+    if (raiz == NULL)
+    {
+        raiz = (Termos_principais *)calloc(sizeof(Termos_principais), 1);
+        strcpy(raiz->titulo, termo);
+        raiz->subtermos = (Sub_termos *)calloc(sizeof(Sub_termos), 1);
+        strcpy(raiz->titulo, termo);
+        strcpy(raiz->subtermos->titulo, sub_termo);
+        raiz->subtermos->con_pg = sub_termo_pag;
+    }
+    else
+    {
+        int comp;
+        comp = strcmp(termo, raiz->titulo);
+
+        if (comp == 0)
+        {
+            raiz->subtermos = inserir_no_sub(raiz->subtermos, sub_termo, sub_termo_pag);
+        }
+        else if (comp < 0)
+        {
+            raiz->esquerdo = inserir_sub_termo(raiz->esquerdo, termo, sub_termo, sub_termo_pag);
+        }
+        else
+        {
+            raiz->direito = inserir_sub_termo(raiz->direito, termo, sub_termo, sub_termo_pag);
+        }
+    }
+    return raiz;
+}
+
+// função para inserir os subtermos  do termo principal
 
 // função para inserir os numeros das paginas que os termos principais ou secundarios aparecem
 Conj_n_pag *inserir_paginas(Conj_n_pag *raiz, int numero)
@@ -139,8 +172,7 @@ Termos_principais *buscar_termo_principal(Termos_principais *raiz, char titulo[]
     return res;
 }
 
-// Função para buscar termos secundarios
-Sub_termos *buscar_termo_secundario(Sub_termos *raiz, char titulo[])
+Sub_termos *buscar_sub_termo(Sub_termos *raiz, char titulo[])
 {
     Sub_termos *res = raiz;
     if (raiz != NULL)
@@ -150,14 +182,42 @@ Sub_termos *buscar_termo_secundario(Sub_termos *raiz, char titulo[])
 
         if (comp < 0)
         {
-            res = buscar_termo_secundario(raiz->esquerdo, titulo);
+            res = buscar_sub_termo(raiz->esquerdo, titulo);
         }
         else if (comp > 0)
         {
-            res = buscar_termo_secundario(raiz->direito, titulo);
+            res = buscar_sub_termo(raiz->direito, titulo);
         }
     }
     return res;
+}
+
+Sub_termos *buscar_termo_secundario(Termos_principais *raiz, char sub_termo[])
+{
+    Sub_termos *res = NULL;
+    if (raiz != NULL)
+    {
+        res = buscar_sub_termo(raiz->subtermos, sub_termo);
+    }
+    return res;
+}
+
+// Função para buscar termos secundarios
+
+Termos_principais *inserir_paginas_para_termo(Termos_principais *raiz, int pag)
+{
+    if (raiz != NULL)
+    {
+        raiz->con_pg = inserir_paginas(raiz->con_pg, pag);
+    }
+}
+
+Sub_termos *inserir_paginas_para_sub_termo(Sub_termos *raiz, int pag)
+{
+    if (raiz != NULL)
+    {
+        raiz->con_pg = inserir_paginas(raiz->con_pg, pag);
+    }
 }
 
 void mostrar_paginas(Conj_n_pag *raiz)
