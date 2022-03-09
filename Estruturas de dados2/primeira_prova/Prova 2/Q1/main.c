@@ -16,6 +16,12 @@ int main()
     char sub_termo[80] = {'\0'};
     int num_pag = 0;
     Conj_n_pag *paginas = inicializar3();
+    double t_total, t_insec_total;
+    clock_t t_ini, t_fim;
+    FILE *arq, *arq2;
+    srand(time(NULL));
+    arq = fopen("tempo_de_busca.txt", "w");
+    arq2 = fopen("tempo_de_insercao.txt", "w");
     do
     {
         opcao = menu();
@@ -31,10 +37,18 @@ int main()
                 scanf(" %d", &num_pag);
                 if (num_pag != 0)
                 {
+                    t_ini = clock();
                     paginas = inserir_paginas(paginas, num_pag);
+                    t_fim = clock();
+                    t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+                    fprintf(arq2, "  %lf  \n", t_insec_total);
                 }
             } while (num_pag != 0);
+            t_ini = clock();
             arvore = inserir_termo(arvore, termo, NULL, paginas);
+            t_fim = clock();
+            t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+            fprintf(arq2, "  %lf  \n", t_insec_total);
             paginas = NULL;
             termo[0] = '\0';
             break;
@@ -56,10 +70,18 @@ int main()
                     scanf(" %d", &num_pag);
                     if (num_pag != 0)
                     {
+                        t_ini = clock();
                         paginas = inserir_paginas(paginas, num_pag);
+                        t_fim = clock();
+                        t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+                        fprintf(arq2, "  %lf  \n", t_insec_total);
                     }
                 } while (num_pag != 0);
+                t_ini = clock();
                 arvore = inserir_sub_termo(arvore, termo, sub_termo, paginas);
+                t_fim = clock();
+                t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+                fprintf(arq2, "  %lf  \n", t_insec_total);
                 paginas = NULL;
                 termo[0] = '\0';
                 sub_termo[0] = '\0';
@@ -68,7 +90,11 @@ int main()
         case 3:
             printf("Degite o termo: ");
             scanf(" %s", termo);
+            t_ini = clock();
             termo_buscado = buscar_termo_principal(arvore, termo);
+            t_fim = clock();
+            t_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+            fprintf(arq, "  %lf  \n", t_total);
             if (termo_buscado == NULL)
             {
                 printf("Termo nao encontrado.\n");
@@ -82,7 +108,11 @@ int main()
                     scanf(" %d", &num_pag);
                     if (num_pag != 0)
                     {
+                        t_ini = clock();
                         inserir_paginas_para_termo(termo_buscado, num_pag);
+                        t_fim = clock();
+                        t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+                        fprintf(arq2, "  %lf  \n", t_insec_total);
                     }
                 } while (num_pag != 0);
             }
@@ -90,7 +120,11 @@ int main()
         case 4:
             printf("Degite o termo: ");
             scanf(" %s", termo);
+            t_ini = clock();
             termo_buscado = buscar_termo_principal(arvore, termo);
+            t_fim = clock();
+            t_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+            fprintf(arq, "  %lf  \n", t_total);
             if (termo_buscado == NULL)
             {
                 printf("Termo nao encontrado.\n");
@@ -99,7 +133,11 @@ int main()
             {
                 printf("Degite o sub termo: ");
                 scanf(" %s", sub_termo);
+                t_ini = clock();
                 sub_termo_buscado = buscar_termo_secundario(termo_buscado, sub_termo);
+                t_fim = clock();
+                t_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+                fprintf(arq, "  %lf  \n", t_total);
                 if (termo_buscado == NULL)
                 {
                     printf("Sub termo nao encontrado.\n");
@@ -113,7 +151,11 @@ int main()
                         scanf(" %d", &num_pag);
                         if (num_pag != 0)
                         {
+                            t_ini = clock();
                             inserir_paginas_para_sub_termo(sub_termo_buscado, num_pag);
+                            t_fim = clock();
+                            t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+                            fprintf(arq2, "  %lf  \n", t_insec_total);
                         }
                     } while (num_pag != 0);
                 }
@@ -125,7 +167,11 @@ int main()
         case 6:
             printf("Degite o termo: ");
             scanf(" %s", termo);
+            t_ini = clock();
             termo_buscado = buscar_termo_principal(arvore, termo);
+            t_fim = clock();
+            t_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+            fprintf(arq, "  %lf  \n", t_total);
             if (termo_buscado == NULL)
             {
                 printf("Termo nao encontrado.\n");
@@ -142,7 +188,10 @@ int main()
             break;
         }
     } while (opcao != 0);
-
+    printf("Resultados salvos no arquivo 'tempo_de_busca.txt'!\n");
+    printf("Resultados salvos no arquivo 'tempo_de_insercao.txt'!\n");
+    fclose(arq);
+    fclose(arq2);
     return 0;
 }
 
