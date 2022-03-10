@@ -44,7 +44,7 @@ Sub_termos *inserir_no_sub(Sub_termos *raiz, char titulo[], Conj_n_pag *conj)
 
     if (raiz == NULL)
     {
-        raiz = (Sub_termos *)calloc(sizeof(Sub_termos), 1);
+        raiz = (Sub_termos *)calloc(1, sizeof(Sub_termos));
         strcpy(raiz->titulo, titulo);
         raiz->con_pg = conj;
     }
@@ -69,7 +69,7 @@ Termos_principais *inserir_termo(Termos_principais *raiz, char titulo[], Sub_ter
 {
     if (raiz == NULL)
     {
-        raiz = (Termos_principais *)calloc(sizeof(Termos_principais), 1);
+        raiz = (Termos_principais *)calloc(1, sizeof(Termos_principais));
         strcpy(raiz->titulo, titulo);
         raiz->subtermos = sub;
         raiz->con_pg = conj;
@@ -99,9 +99,9 @@ Termos_principais *inserir_sub_termo(Termos_principais *raiz, char termo[], char
 {
     if (raiz == NULL)
     {
-        raiz = (Termos_principais *)calloc(sizeof(Termos_principais), 1);
+        raiz = (Termos_principais *)calloc(1, sizeof(Termos_principais));
         strcpy(raiz->titulo, termo);
-        raiz->subtermos = (Sub_termos *)calloc(sizeof(Sub_termos), 1);
+        raiz->subtermos = (Sub_termos *)calloc(1, sizeof(Sub_termos));
         strcpy(raiz->titulo, termo);
         strcpy(raiz->subtermos->titulo, sub_termo);
         raiz->subtermos->con_pg = sub_termo_pag;
@@ -134,7 +134,7 @@ Conj_n_pag *inserir_paginas(Conj_n_pag *raiz, int numero)
 {
     if (raiz == NULL)
     {
-        raiz = (Conj_n_pag *)calloc(sizeof(Conj_n_pag), 1);
+        raiz = (Conj_n_pag *)calloc(1, sizeof(Conj_n_pag));
         raiz->num_paginas = numero;
     }
     else
