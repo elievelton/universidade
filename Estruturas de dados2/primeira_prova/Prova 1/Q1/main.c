@@ -23,6 +23,7 @@ int main()
         {
             no = inserir_no(no, (rand() % 505000));
         }
+
         t_fim = clock();
         tempo_in[i] = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
         fprintf(arq2, "  %lf  \n", tempo_in[i]);
@@ -60,8 +61,11 @@ int main()
 
         printf("Busca %d demorou :%lf segundos\n", i + 1, busca_tempo[i]);
     }
+    
     printf("Resultados salvos no arquivo 'tempo_de_busca.txt'!\n");
     printf("Resultados salvos no arquivo 'tempo_de_insercao.txt'!\n");
+
+
     printf("\n");
     fclose(arq);
     fclose(arq2);

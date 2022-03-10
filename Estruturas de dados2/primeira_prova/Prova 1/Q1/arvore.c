@@ -9,12 +9,10 @@ struct no
     No *esquerdo, *direito;
 };
 
-
 No *inicializar()
 {
     return NULL;
 }
-
 
 No *inserir_no(No *raiz, int cod)
 {
@@ -41,40 +39,58 @@ No *inserir_no(No *raiz, int cod)
     }
     return raiz;
 }
-int profu(No *raiz){
+int profu(No *raiz)
+{
     int prof = 0, esq, dir;
 
-    if (raiz == NULL){
+    if (raiz == NULL)
+    {
         prof = -1;
-    } else {
+    }
+    else
+    {
         esq = profu((*raiz).esquerdo);
         dir = profu((*raiz).direito);
 
-        if (esq < dir){
+        if (esq < dir)
+        {
             prof = dir + 1;
-        }else{
+        }
+        else
+        {
             prof = esq + 1;
         }
     }
     return prof;
 }
-int prof_menor(No *raiz){
+int prof_menor(No *raiz)
+{
     int prof = 0, esq, dir;
 
-    if (raiz == NULL){
+    if (raiz == NULL)
+    {
         prof = -1;
-    } else {
+    }
+    else
+    {
         esq = prof_menor((*raiz).esquerdo);
         dir = prof_menor((*raiz).direito);
 
-        if (esq < dir && raiz->esquerdo!=NULL){
+        if (esq < dir && raiz->esquerdo != NULL)
+        {
             prof = esq + 1;
-        }else if(raiz->direito!=NULL){
+        }
+        else if (raiz->direito != NULL)
+        {
             prof = dir + 1;
-        }else if(raiz->esquerdo==NULL){
-            prof = dir +1;
-        }else if(raiz->direito==NULL){
-            prof = esq +1;
+        }
+        else if (raiz->esquerdo == NULL)
+        {
+            prof = dir + 1;
+        }
+        else if (raiz->direito == NULL)
+        {
+            prof = esq + 1;
         }
     }
     return prof;
@@ -84,16 +100,13 @@ void mostrar_principal(No *raiz)
 {
     if (raiz != NULL)
     {
-         
+
         printf("%d (", raiz->numero);
         mostrar_principal(raiz->esquerdo);
         mostrar_principal(raiz->direito);
         printf(")");
     }
 }
-
-
-
 
 void liberarMemoria(No *raiz)
 {
@@ -105,12 +118,13 @@ void liberarMemoria(No *raiz)
     }
 }
 
-
-No* buscar_versao_1(No *raiz, int num){
-    if(raiz){
-        if(num == raiz->numero)
+No *buscar_versao_1(No *raiz, int num)
+{
+    if (raiz)
+    {
+        if (num == raiz->numero)
             return raiz;
-        else if(num < raiz->numero)
+        else if (num < raiz->numero)
             return buscar_versao_1(raiz->esquerdo, num);
         else
             return buscar_versao_1(raiz->direito, num);
