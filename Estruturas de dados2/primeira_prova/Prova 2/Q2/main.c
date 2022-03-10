@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "arvore.h"
 #include <time.h>
 
@@ -18,6 +19,12 @@ int main()
 
   Paginas *pag = create_paginas();
 
+  double t_total, t_insec_total;
+  clock_t t_ini, t_fim;
+  FILE *arq, *arq2;
+  srand(time(NULL));
+  arq = fopen("tempo_de_busca.txt", "w");
+  arq2 = fopen("tempo_de_insercao.txt", "w");
   do
   {
     opcao = menu();
@@ -34,10 +41,18 @@ int main()
         scanf(" %d", &num_pag);
         if (num_pag != 0)
         {
+          t_ini = clock();
           insert_paginas(&pag, num_pag);
+          t_fim = clock();
+          t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+          fprintf(arq2, "  %lf  \n", t_insec_total);
         }
       } while (num_pag != 0);
+      t_ini = clock();
       insert_termo(&arvore, termo, pag);
+      t_fim = clock();
+      t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+      fprintf(arq2, "  %lf  \n", t_insec_total);
       pag = NULL;
       termo[0] = '\0';
       break;
@@ -60,10 +75,18 @@ int main()
           scanf(" %d", &num_pag);
           if (num_pag != 0)
           {
+            t_ini = clock();
             insert_paginas(&pag, num_pag);
+            t_fim = clock();
+            t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+            fprintf(arq2, "  %lf  \n", t_insec_total);
           }
         } while (num_pag != 0);
+        t_ini = clock();
         insert_sub_termo_to_termo(&termo_buscado, sub_termo, pag);
+        t_fim = clock();
+        t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+        fprintf(arq2, "  %lf  \n", t_insec_total);
         pag = NULL;
         termo_buscado = NULL;
         termo[0] = '\0';
@@ -87,7 +110,11 @@ int main()
           scanf(" %d", &num_pag);
           if (num_pag != 0)
           {
+            t_ini = clock();
             insert_paginas_to_termo(&termo_buscado, num_pag);
+            t_fim = clock();
+            t_insec_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+            fprintf(arq2, "  %lf  \n", t_insec_total);
           }
         } while (num_pag != 0);
         termo_buscado = NULL;
@@ -137,7 +164,11 @@ int main()
     case 6:
       printf("Degite o termo: ");
       scanf(" %s", termo);
+      t_ini = clock();
       termo_buscado = search_termo(arvore, termo);
+      t_fim = clock();
+      t_total = (double)(t_fim - t_ini) / CLOCKS_PER_SEC;
+      fprintf(arq, "  %lf  \n", t_total);
       if (termo_buscado == NULL)
       {
         printf("Termo nao encontrado.\n");
@@ -154,7 +185,10 @@ int main()
       break;
     }
   } while (opcao != 0);
-
+  printf("Resultados salvos no arquivo 'tempo_de_busca.txt'!\n");
+  printf("Resultados salvos no arquivo 'tempo_de_insercao.txt'!\n");
+  fclose(arq);
+  fclose(arq2);
   return 0;
 }
 
