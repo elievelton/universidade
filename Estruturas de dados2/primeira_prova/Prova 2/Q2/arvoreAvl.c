@@ -1,4 +1,4 @@
-#include "arvore.h"
+#include "arvoreAvl.h"
 
 struct paginas
 {
