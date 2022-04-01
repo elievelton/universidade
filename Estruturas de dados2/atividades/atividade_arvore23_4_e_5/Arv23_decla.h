@@ -12,8 +12,13 @@ Arv23 *quebraNo(Arv23 **Raiz, Arv23 *NovoNo, int info, int *infomeio);
 
 Arv23 *insere23(Arv23 *pai, Arv23 **raiz, int info, int *infoMeio);
 
+int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info);
+
 int altura(Arv23 *raiz);
 
 int busca(Arv23 *Raiz,int Valor);
 
 int qtdnofolha(Arv23 *Raiz);
+
+int estaContido(Arv23 *Raiz, int info);
+
