@@ -11,9 +11,14 @@ int main()
     int opcao = 0;
     Arv23 *Arv23 = inicializar();
 
-    InsereCalcados(NULL,&Arv23,1,"Tenis","Adidas",20,89.90,NULL);
+    InsereCalcados(NULL,&Arv23,5,"Tenis","Adidas",20,89.90,NULL);
     InsereCalcados(NULL,&Arv23,2,"Sapato_Tenis","Olimpicus",222,59.90,NULL);
-    mostrar(Arv23);
+    //InsereCalcados(NULL,&Arv23,3,"Sapato_Tenis","Olimpicus",222,59.90,NULL); Ta dando erro na hora de inserir mais 1 informação na hora que precisa quebrar o nó
+
+    mostrarTudo(Arv23);//ta funcionando
+    busca(Arv23,2);//ta funcionando
+    //excluirElemento(NULL,&Arv23,1); ta dando erro de sementação, precisando averiguar
+    //mostrar(Arv23);
     
     // clock_t t_ini, t_fim;
     // FILE *arq, *arq2;

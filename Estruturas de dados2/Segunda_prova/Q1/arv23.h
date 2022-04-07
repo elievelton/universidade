@@ -28,3 +28,4 @@ int qtdnofolha(Arv23 *Raiz);
 int estaContido(Arv23 *Raiz, int info);
 
 Arv23 *inicializar();
+void mostrarTudo(Arv23 *Raiz);

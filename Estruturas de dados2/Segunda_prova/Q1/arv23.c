@@ -19,7 +19,7 @@ struct Arv23
     Arv23 *esq, *centro, *dir;
 };
 
-//Alocando e criando um novo Calçado
+// Alocando e criando um novo Calçado
 Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, float preco)
 {
     Calcados *info = (Calcados *)malloc(sizeof(Calcados));
@@ -33,12 +33,13 @@ Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, float preco)
     return info;
 }
 
-Arv23 *inicializar(){
+Arv23 *inicializar()
+{
 
     return NULL;
 }
 
-//Fazendo uma busca pelo Id do calçado
+// Fazendo uma busca pelo Id do calçado
 int busca(Arv23 *Raiz, int Valor)
 {
     int find = -1;
@@ -48,23 +49,30 @@ int busca(Arv23 *Raiz, int Valor)
         if (Raiz->chaveEsq->cod == Valor)
         {
             find = 1;
+            printf("--------Calçado encontrado com sucesso!----------\n");
+            mostrar(Raiz);
         }
 
         else if (Raiz->chaveDir->cod == Valor)
         {
             find = 1;
+            printf("----------Calçado encontrado com sucesso!-----------\n");
+            mostrar(Raiz);
         }
         else if (Raiz->chaveEsq->cod != Valor)
         {
             find = 0;
+            printf("Produto Não encontrado\n");
         }
         else if (Raiz->chaveDir->cod != Valor)
         {
             find = 0;
+            printf("Produto Não encontrado\n");
         }
         if (Raiz == NULL)
         {
             find = 0;
+            printf("Produto Não encontrado\n");
         }
 
         if ((Raiz->nChaves == 1) && Valor < Raiz->chaveEsq->cod)
@@ -94,28 +102,31 @@ void mostrar(Arv23 *Raiz)
 {
     if (Raiz != NULL)
     {
+        if (Raiz->nChaves == 1)
+        {
+            printf(
+                "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
 
-        printf(
-            "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n",
-
-               Raiz->chaveEsq->cod,
-               Raiz->chaveEsq->tipo,
-               Raiz->chaveEsq->marca,
-               Raiz->chaveEsq->qtd,
-               Raiz->chaveEsq->preco);
+                Raiz->chaveEsq->cod,
+                Raiz->chaveEsq->tipo,
+                Raiz->chaveEsq->marca,
+                Raiz->chaveEsq->qtd,
+                Raiz->chaveEsq->preco,
+                Raiz->nChaves);
+        }
 
         if (Raiz->nChaves == 2)
         {
             printf(
-                
-                "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n",
 
-                   Raiz->chaveDir->cod,
-                   Raiz->chaveDir->tipo,
-                   Raiz->chaveDir->marca,
-                   Raiz->chaveDir->qtd,
-                   Raiz->chaveDir->preco
-                   );
+                "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
+
+                Raiz->chaveDir->cod,
+                Raiz->chaveDir->tipo,
+                Raiz->chaveDir->marca,
+                Raiz->chaveDir->qtd,
+                Raiz->chaveDir->preco,
+                Raiz->nChaves);
         }
 
         mostrar(Raiz->esq);
@@ -124,13 +135,50 @@ void mostrar(Arv23 *Raiz)
     }
 }
 
+void mostrarTudo(Arv23 *Raiz)
+{
+    if (Raiz != NULL)
+    {
+
+        printf(
+            "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
+
+            Raiz->chaveEsq->cod,
+            Raiz->chaveEsq->tipo,
+            Raiz->chaveEsq->marca,
+            Raiz->chaveEsq->qtd,
+            Raiz->chaveEsq->preco,
+            Raiz->nChaves);
+
+        if (Raiz->nChaves == 2)
+        {
+            printf(
+
+                "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
+
+                Raiz->chaveDir->cod,
+                Raiz->chaveDir->tipo,
+                Raiz->chaveDir->marca,
+                Raiz->chaveDir->qtd,
+                Raiz->chaveDir->preco,
+                Raiz->nChaves);
+        }
+
+      
+    }
+
+        mostrar(Raiz->esq);
+        mostrar(Raiz->centro);
+        mostrar(Raiz->dir);
+    }
+
 // Essa função é usada para criar um novo nó na Arv23
 
 Arv23 *criaNO(Calcados *info, Arv23 *noEsq, Arv23 *noCentro)
 {
     Arv23 *no = (Arv23 *)malloc(sizeof(Arv23));
 
-    no->chaveEsq = info;
+    (*no).chaveEsq = info;
     (*no).chaveDir = NULL;
     (*no).nChaves = 1;
     (*no).esq = noEsq;
@@ -194,13 +242,13 @@ Arv23 *quebraNo(Arv23 **Raiz, Arv23 *NovoNo, Calcados *info, Calcados *infoMeio)
 {
     Arv23 *Novo;
 
-    if (info > (**Raiz).chaveDir)
+    if (info->cod > (**Raiz).chaveDir->cod)
     {
         infoMeio = (**Raiz).chaveDir;
         Novo = criaNO(info, (**Raiz).dir, NovoNo);
     }
 
-    else if (info < (**Raiz).chaveEsq)
+    else if (info->cod < (**Raiz).chaveEsq->cod)
     {
         infoMeio = (**Raiz).chaveEsq;
         Novo = criaNO((**Raiz).chaveDir, (**Raiz).centro, (**Raiz).dir);
@@ -247,7 +295,7 @@ Arv23 *insere23(Arv23 *pai, Arv23 **Raiz, Calcados *info, Calcados *infoMeio)
                 novo = NULL;
             }
             else
-            {
+            {;
                 novo = quebraNo(Raiz, NULL, info, infoMeio);
 
                 if (pai == NULL)
@@ -344,7 +392,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
             {
                 if (estaContido(*Raiz, info) == 1)
                     (**Raiz).chaveEsq = (**Raiz).chaveDir;
-                     free((**Raiz).chaveDir);
+                free((**Raiz).chaveDir);
 
                 if ((**Raiz).nChaves == 2)
                     (**Raiz).nChaves = 1;
@@ -393,7 +441,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     {
                         (**Raiz).chaveEsq = (**Raiz).centro->chaveEsq;
                         (**Raiz).centro->chaveEsq = (**Raiz).centro->chaveDir;
-                         free((**Raiz).centro->chaveDir);
+                        free((**Raiz).centro->chaveDir);
                         (**Raiz).centro->nChaves = 1;
                     }
 
@@ -603,7 +651,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     else if ((**Raiz).esq->nChaves == 2)
                     {
                         (**Raiz).chaveEsq = (**Raiz).esq->chaveDir;
-                         free((**Raiz).esq->chaveDir);
+                        free((**Raiz).esq->chaveDir);
                         (**Raiz).esq->nChaves = 1;
                     }
 
