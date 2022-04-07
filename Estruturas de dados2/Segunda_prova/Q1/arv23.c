@@ -5,8 +5,8 @@
 struct Calcados
 {
     int cod;
-    char tipo;
-    char marca;
+    char tipo[100];
+    char marca[100];
     int qtd;
     float preco;
     int posicao_arquivo; // Deve guardar a posição de um caçado dentro do arquivo
@@ -20,11 +20,11 @@ struct Arv23
 };
 
 //Alocando e criando um novo Calçado
-Calcados *criaCal(int cod, char tipo, char marca, int qtd, float preco)
+Calcados *criaCal(int cod, char tipo[], char marca[], int qtd, float preco)
 {
     Calcados *info = (Calcados *)malloc(sizeof(Calcados));
 
-    info->cod = cod;
+    (*info).cod = cod;
     (*info).tipo = tipo;
     (*info).marca = marca;
     (*info).qtd = qtd;
@@ -222,7 +222,7 @@ Arv23 *quebraNo(Arv23 **Raiz, Arv23 *NovoNo, Calcados *info, Calcados *infoMeio)
     return Novo;
 }
 // chamar essa função no lugar da insere23 para inserir
-Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char tipo, char marca, int qtd, float preco, Calcados *infoMeio)
+Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char tipo[], char marca[], int qtd, float preco, Calcados *infoMeio)
 {
 
     Calcados *info = criaCal(cod, tipo, marca, qtd, preco);

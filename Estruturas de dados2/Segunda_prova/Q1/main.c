@@ -11,8 +11,8 @@ int main()
     int opcao = 0;
     Arv23 *Arv23 = inicializar();
 
-    InserirCalcados(NULL,Arv23,1,"Tenis","Adidas",20,89.90,NULL);
-    InserirCalcados(NULL,Arv23,2,"Tenis","Adidas",20,89.90,NULL);
+    InsereCalcados(NULL,NULL,1,"Tenis","Adidas",20,89.90,NULL);
+    InsereCalcados(NULL,NULL,2,"Tenis","Adidas",20,89.90,NULL);
     mostrar(Arv23);
     
     // clock_t t_ini, t_fim;
