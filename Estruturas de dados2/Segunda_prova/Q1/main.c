@@ -12,7 +12,7 @@ int main()
     Arv23 *Arv23 = inicializar();
 
     InsereCalcados(NULL,&Arv23,1,"Tenis","Adidas",20,89.90,NULL);
-    InsereCalcados(NULL,&Arv23,2,"Tenis","Adidas",20,89.90,NULL);
+    InsereCalcados(NULL,&Arv23,2,"Sapato_Tenis","Olimpicus",222,59.90,NULL);
     mostrar(Arv23);
     
     // clock_t t_ini, t_fim;

@@ -111,10 +111,10 @@ void mostrar(Arv23 *Raiz)
                 "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n",
 
                    Raiz->chaveDir->cod,
+                   Raiz->chaveDir->tipo,
                    Raiz->chaveDir->marca,
                    Raiz->chaveDir->qtd,
-                   Raiz->chaveDir->preco,
-                   Raiz->chaveDir->tipo
+                   Raiz->chaveDir->preco
                    );
         }
 
