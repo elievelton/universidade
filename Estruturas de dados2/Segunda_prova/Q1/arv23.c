@@ -123,8 +123,8 @@ void mostrar(Arv23 *Raiz)
         }
 
         mostrar(Raiz->esq);
-        //mostrar(Raiz->centro);
-        //mostrar(Raiz->dir);
+        // mostrar(Raiz->centro);
+        // mostrar(Raiz->dir);
     }
 }
 
@@ -145,6 +145,18 @@ void mostrarTudo(Arv23 *Raiz)
 
         if (Raiz->nChaves == 2)
         {
+
+            printf(
+
+                "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
+
+                Raiz->chaveEsq->cod,
+                Raiz->chaveEsq->tipo,
+                Raiz->chaveEsq->marca,
+                Raiz->chaveEsq->qtd,
+                Raiz->chaveEsq->preco,
+                Raiz->nChaves);
+
             printf(
 
                 "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
@@ -350,10 +362,11 @@ int estaContido(Arv23 *Raiz, int info)
     printf("ESTACONTIDO\n");
     if (info == Raiz->chaveEsq->cod)
         return 1;
-    if(Raiz->nChaves==2){
+    if (Raiz->nChaves == 2)
+    {
 
-     if (info == Raiz->chaveDir->cod)
-        return 2;
+        if (info == Raiz->chaveDir->cod)
+            return 2;
     }
     return 0;
 }
@@ -466,9 +479,15 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                             *Raiz = (**Raiz).esq;
                         }
                     }
-                }else{
-
-                    print("Ajeitar");
+                }
+                else
+                {
+                    Calcados *aux = (*Raiz)->chaveEsq;
+                    (**Raiz).chaveEsq = (**Raiz).centro->chaveEsq;
+                    (**Raiz).centro->chaveEsq = (**Raiz).centro->chaveDir;
+                    (**Raiz).centro->nChaves = 1;
+                    (**Raiz).centro->chaveDir = NULL;
+                    free(aux);
                 }
             }
 
@@ -648,15 +667,14 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     }
                 }
             }
-
         }
-        
 
-        else if (info < (**Raiz).chaveEsq->cod){
+        else if (info < (**Raiz).chaveEsq->cod)
+        {
             printf("ANtes de excluir");
             excluirElemento(Raiz, &(**Raiz).esq, info);
-             printf("Depois de excluir");
-            }
+            printf("Depois de excluir");
+        }
 
         else if ((**Raiz).nChaves == 1)
             excluirElemento(Raiz, &(**Raiz).centro, info);
