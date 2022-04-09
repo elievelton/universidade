@@ -12,15 +12,11 @@ int main()
     Pai = NULL;
 
 
-    insere23(Pai, &Raiz, 1000, &sobe);
-	insere23(Pai, &Raiz, 500, &sobe);
-	insere23(Pai, &Raiz, 600, &sobe);
-	insere23(Pai, &Raiz, 2000, &sobe);
-	insere23(Pai, &Raiz, 1500, &sobe);
-	insere23(Pai, &Raiz, 200, &sobe);
-    insere23(Pai, &Raiz, 1300, &sobe);
-    insere23(Pai, &Raiz, 900, &sobe);
-    insere23(Pai, &Raiz, 4000, &sobe);
+    insere23(Pai, &Raiz, 1, &sobe);
+	insere23(Pai, &Raiz, 2, &sobe);
+	insere23(Pai, &Raiz, 3, &sobe);
+	
+	
 
     mostrar(Raiz);
 

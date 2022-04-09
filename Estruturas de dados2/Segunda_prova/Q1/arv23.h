@@ -3,7 +3,7 @@ typedef struct Calcados Calcados;
 
 void mostrar(Arv23 *Raiz);
 
-Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char tipo[], char marca[], int qtd, float preco, Calcados *infoMeio);
+Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char tipo[], char marca[], int qtd, float preco, Calcados **infoMeio);
 
 Calcados *criaCal(int cod, char tipo[], char marca[], int qtd, float preco);
 
@@ -13,9 +13,9 @@ Arv23 *adicionaNo(Arv23 *No, Calcados *info, Arv23 *Novo);
 
 int folha(Arv23 *No);
 
-Arv23 *quebraNo(Arv23 **Raiz, Arv23 *NovoNo, Calcados *info, Calcados *infoMeio);
+Arv23 *quebraNo(Arv23 **Raiz, Arv23 *NovoNo, Calcados *info, Calcados **infoMeio);
 
-Arv23 *insere23(Arv23 *pai, Arv23 **Raiz, Calcados *info, Calcados *infoMeio);
+Arv23 *insere23(Arv23 *pai, Arv23 **Raiz, Calcados *info, Calcados **infoMeio);
 
 int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info);
 
@@ -27,5 +27,4 @@ int qtdnofolha(Arv23 *Raiz);
 
 int estaContido(Arv23 *Raiz, int info);
 
-Arv23 *inicializar();
 void mostrarTudo(Arv23 *Raiz);

@@ -9,16 +9,21 @@ int main()
 
     double t_total, t_insec_total;
     int opcao = 0;
-    Arv23 *Arv23 = inicializar();
+    Arv23 *Arv23,*pai ;
+    Calcados *sobe = NULL;
+    pai =NULL;;
+    Arv23 = NULL;
 
-    InsereCalcados(NULL,&Arv23,5,"Tenis","Adidas",20,89.90,NULL);
-    InsereCalcados(NULL,&Arv23,2,"Sapato_Tenis","Olimpicus",222,59.90,NULL);
-    //InsereCalcados(NULL,&Arv23,3,"Sapato_Tenis","Olimpicus",222,59.90,NULL); Ta dando erro na hora de inserir mais 1 informação na hora que precisa quebrar o nó
+    InsereCalcados(pai,&Arv23,1,"Tenis","Adidas",20,89.90,&sobe);
+    InsereCalcados(pai,&Arv23,2,"Sapato_Tenis","Olimpicus",222,59.90,&sobe);
+    InsereCalcados(pai,&Arv23,3,"Sapato_Tenis","Olimpicus",228,89.90,&sobe); //Ta dando erro na hora de inserir mais 1 informação na hora que precisa quebrar o nó
 
     mostrarTudo(Arv23);//ta funcionando
-    busca(Arv23,2);//ta funcionando
-    //excluirElemento(NULL,&Arv23,1); ta dando erro de sementação, precisando averiguar
-    //mostrar(Arv23);
+    //printf("%d ",(*Arv23).esq.chaveEsq.cod);
+    //busca(Arv23,2);//ta funcionando
+    excluirElemento(&pai,&Arv23,2); //ta dando erro de sementação, precisando averiguar
+    printf("----------------------\n");
+    mostrarTudo(Arv23);
     
     // clock_t t_ini, t_fim;
     // FILE *arq, *arq2;

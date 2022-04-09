@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include "arv23.h"
 
+struct Arv23
+{
+    Calcados *chaveEsq, *chaveDir;
+    int nChaves;
+    Arv23 *esq, *centro, *dir;
+};
+
 struct Calcados
 {
     int cod;
@@ -11,14 +18,6 @@ struct Calcados
     float preco;
     int posicao_arquivo; // Deve guardar a posição de um caçado dentro do arquivo
 };
-
-struct Arv23
-{
-    Calcados *chaveEsq, *chaveDir;
-    int nChaves;
-    Arv23 *esq, *centro, *dir;
-};
-
 // Alocando e criando um novo Calçado
 Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, float preco)
 {
@@ -31,12 +30,6 @@ Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, float preco)
     (*info).preco = preco;
 
     return info;
-}
-
-Arv23 *inicializar()
-{
-
-    return NULL;
 }
 
 // Fazendo uma busca pelo Id do calçado
@@ -130,8 +123,8 @@ void mostrar(Arv23 *Raiz)
         }
 
         mostrar(Raiz->esq);
-        mostrar(Raiz->centro);
-        mostrar(Raiz->dir);
+        //mostrar(Raiz->centro);
+        //mostrar(Raiz->dir);
     }
 }
 
@@ -163,14 +156,12 @@ void mostrarTudo(Arv23 *Raiz)
                 Raiz->chaveDir->preco,
                 Raiz->nChaves);
         }
-
-      
     }
 
-        mostrar(Raiz->esq);
-        mostrar(Raiz->centro);
-        mostrar(Raiz->dir);
-    }
+    mostrar(Raiz->esq);
+    mostrar(Raiz->centro);
+    mostrar(Raiz->dir);
+}
 
 // Essa função é usada para criar um novo nó na Arv23
 
@@ -196,7 +187,7 @@ Arv23 *adicionaNo(Arv23 *Raiz, Calcados *info, Arv23 *Novo)
         (*Raiz).chaveDir = info;
         (*Raiz).dir = Novo;
     }
-    else
+    else // Faço apenas a troca de posição
     {
         (*Raiz).chaveDir = (*Raiz).chaveEsq;
         (*Raiz).chaveEsq = info;
@@ -218,59 +209,40 @@ int folha(Arv23 *Raiz)
 
     return folha;
 }
-// Função usada para verificar a quantidade de nos folhas em uma arvore 2 3
-int qtdnofolha(Arv23 *Raiz)
-{
-
-    if (Raiz == NULL)
-    {
-        return 0;
-    }
-
-    else if (folha(Raiz))
-    {
-        return 1;
-    }
-    else
-    {
-
-        return 1 + (qtdnofolha(Raiz->dir) + qtdnofolha(Raiz->centro) + qtdnofolha(Raiz->esq));
-    }
-}
 // Função usanda quando vai inserir um elemento e não tem espaço entao quebra-se o nó
-Arv23 *quebraNo(Arv23 **Raiz, Arv23 *NovoNo, Calcados *info, Calcados *infoMeio)
+Arv23 *quebraNo(Arv23 **Raiz, Arv23 *NovoNo, Calcados *info, Calcados **infoMeio)
 {
     Arv23 *Novo;
 
-    if (info->cod > (**Raiz).chaveDir->cod)
+    if (info->cod < (**Raiz).chaveEsq->cod) // novoNo == MaiorNó, Info==Struct , infoMeio==Sobe
     {
-        infoMeio = (**Raiz).chaveDir;
-        Novo = criaNO(info, (**Raiz).dir, NovoNo);
-    }
-
-    else if (info->cod < (**Raiz).chaveEsq->cod)
-    {
-        infoMeio = (**Raiz).chaveEsq;
+        *infoMeio = (**Raiz).chaveEsq;
         Novo = criaNO((**Raiz).chaveDir, (**Raiz).centro, (**Raiz).dir);
 
         (**Raiz).chaveEsq = info;
         (**Raiz).centro = NovoNo;
     }
 
-    else
+    else if (info->cod < (**Raiz).chaveDir->cod)
     {
-        infoMeio = info;
+        *infoMeio = info;
         Novo = criaNO((**Raiz).chaveDir, NovoNo, (**Raiz).dir);
     }
 
-    free((**Raiz).chaveDir);
+    else
+    {
+        *infoMeio = (**Raiz).chaveDir;
+        Novo = criaNO(info, (**Raiz).dir, NovoNo);
+    }
+
+    (**Raiz).chaveDir = NULL;
     (**Raiz).nChaves = 1;
     (**Raiz).dir = NULL;
 
     return Novo;
 }
 // chamar essa função no lugar da insere23 para inserir
-Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char *tipo, char *marca, int qtd, float preco, Calcados *infoMeio)
+Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char *tipo, char *marca, int qtd, float preco, Calcados **infoMeio)
 {
 
     Calcados *info = criaCal(cod, tipo, marca, qtd, preco);
@@ -279,9 +251,9 @@ Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char *tipo, char *marca
 }
 
 // Complemento da Insere Calcados
-Arv23 *insere23(Arv23 *pai, Arv23 **Raiz, Calcados *info, Calcados *infoMeio)
+Arv23 *insere23(Arv23 *pai, Arv23 **Raiz, Calcados *info, Calcados **infoMeio)
 {
-    Arv23 *novo;
+    Arv23 *novo; // Novo == MaiorNó
 
     if (*Raiz == NULL)
         *Raiz = criaNO(info, NULL, NULL);
@@ -295,12 +267,13 @@ Arv23 *insere23(Arv23 *pai, Arv23 **Raiz, Calcados *info, Calcados *infoMeio)
                 novo = NULL;
             }
             else
-            {;
+            {
+
                 novo = quebraNo(Raiz, NULL, info, infoMeio);
 
                 if (pai == NULL)
                 {
-                    *Raiz = criaNO(infoMeio, *Raiz, novo);
+                    *Raiz = criaNO(*infoMeio, *Raiz, novo);
                     novo = NULL;
                 }
             }
@@ -323,16 +296,16 @@ Arv23 *insere23(Arv23 *pai, Arv23 **Raiz, Calcados *info, Calcados *infoMeio)
             {
                 if ((**Raiz).nChaves == 1)
                 {
-                    (*Raiz) = adicionaNo(*Raiz, infoMeio, novo);
+                    (*Raiz) = adicionaNo(*Raiz, *infoMeio, novo);
                     novo = NULL;
                 }
                 else
                 {
-                    novo = quebraNo(Raiz, novo, infoMeio, infoMeio);
+                    novo = quebraNo(Raiz, novo, *infoMeio, infoMeio);
 
                     if (pai == NULL)
                     {
-                        *Raiz = criaNO(infoMeio, *Raiz, novo);
+                        *Raiz = criaNO(*infoMeio, *Raiz, novo);
                         novo = NULL;
                     }
                 }
@@ -374,10 +347,14 @@ int altura(Arv23 *raiz)
 // Função para verificar se o elemento está na info 1 ou info 2 usado ela função de excluir
 int estaContido(Arv23 *Raiz, int info)
 {
+    printf("ESTACONTIDO\n");
     if (info == Raiz->chaveEsq->cod)
         return 1;
-    if (info == Raiz->chaveDir->cod)
+    if(Raiz->nChaves==2){
+
+     if (info == Raiz->chaveDir->cod)
         return 2;
+    }
     return 0;
 }
 
@@ -385,14 +362,16 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
 {
     if (*Raiz != NULL)
     {
+        printf("ANtes do estacontido");
         if (estaContido(*Raiz, info) != 0)
         {
+            printf("Depois do estacontido");
 
             if (*pai == NULL && folha(*Raiz)) // Verifica se a Raiz da Árvore é um nó Folha.
             {
                 if (estaContido(*Raiz, info) == 1)
                     (**Raiz).chaveEsq = (**Raiz).chaveDir;
-                free((**Raiz).chaveDir);
+                ((**Raiz).chaveDir) = NULL;
 
                 if ((**Raiz).nChaves == 2)
                     (**Raiz).nChaves = 1;
@@ -408,20 +387,20 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     {
                         (**Raiz).chaveDir = (**Raiz).dir->chaveEsq;
                         (**Raiz).dir->chaveEsq = (**Raiz).dir->chaveDir;
-                        free((**Raiz).chaveDir);
+                        (**Raiz).chaveDir = NULL;
                         (**Raiz).dir->nChaves = 1;
                     }
 
                     else if (estaContido(*Raiz, info) == 2 && (**Raiz).centro->nChaves == 2)
                     {
                         (**Raiz).chaveDir = (**Raiz).centro->chaveDir;
-                        free((**Raiz).centro->chaveDir);
+                        (**Raiz).centro->chaveDir = NULL;
                         (**Raiz).dir->nChaves = 1;
                     }
 
                     else if (estaContido(*Raiz, info) == 2 && (**Raiz).esq->nChaves == 2)
                     {
-                        free((**Raiz).chaveDir);
+                        (**Raiz).chaveDir = NULL;
                         (**Raiz).nChaves = 1;
                         (**Raiz).centro->chaveDir = (**Raiz).dir->chaveEsq;
                         (**Raiz).centro->nChaves = 2;
@@ -430,7 +409,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
 
                     else if (estaContido(*Raiz, info) == 2 && (**Raiz).esq->nChaves == 1)
                     {
-                        free((**Raiz).chaveDir);
+                        (**Raiz).chaveDir = NULL;
                         (**Raiz).nChaves = 1;
                         (**Raiz).centro->chaveDir = (**Raiz).dir->chaveEsq;
                         (**Raiz).centro->nChaves = 2;
@@ -441,21 +420,21 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     {
                         (**Raiz).chaveEsq = (**Raiz).centro->chaveEsq;
                         (**Raiz).centro->chaveEsq = (**Raiz).centro->chaveDir;
-                        free((**Raiz).centro->chaveDir);
+                        (**Raiz).centro->chaveDir = NULL;
                         (**Raiz).centro->nChaves = 1;
                     }
 
                     else if (estaContido(*Raiz, info) == 1 && (**Raiz).esq->nChaves == 2)
                     {
                         (**Raiz).chaveEsq = (**Raiz).esq->chaveDir;
-                        free((**Raiz).esq->chaveDir);
+                        (**Raiz).esq->chaveDir = NULL;
                         (**Raiz).esq->nChaves = 1;
                     }
 
                     else if (estaContido(*Raiz, info) == 1 && (**Raiz).centro->nChaves == 1)
                     {
                         (**Raiz).chaveEsq = (**Raiz).chaveDir;
-                        free((**Raiz).chaveDir);
+                        (**Raiz).chaveDir = NULL;
                         (**Raiz).nChaves = 1;
                         (**Raiz).esq->chaveDir = (**Raiz).centro->chaveEsq;
                         (**Raiz).esq->nChaves = 2;
@@ -468,14 +447,14 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                         {
                             (**Raiz).chaveEsq = (**Raiz).centro->chaveEsq;
                             (**Raiz).centro->chaveEsq = (**Raiz).centro->chaveDir;
-                            free((**Raiz).centro->chaveDir);
+                            (**Raiz).centro->chaveDir = NULL;
                             (**Raiz).centro->nChaves = 1;
                         }
 
                         else if ((**Raiz).esq->nChaves == 2)
                         {
                             (**Raiz).chaveEsq = (**Raiz).esq->chaveDir;
-                            free((**Raiz).esq->chaveDir);
+                            (**Raiz).esq->chaveDir = NULL;
                             (**Raiz).esq->nChaves = 1;
                         }
 
@@ -487,6 +466,9 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                             *Raiz = (**Raiz).esq;
                         }
                     }
+                }else{
+
+                    print("Ajeitar");
                 }
             }
 
@@ -497,7 +479,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                 {
                     if (estaContido(*Raiz, info) == 1)
                         (**Raiz).chaveEsq = (**Raiz).chaveDir;
-                    free((**Raiz).chaveDir);
+                    (**Raiz).chaveDir = NULL;
                     (**Raiz).nChaves = 1;
                 }
 
@@ -507,7 +489,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     {
                         (**Raiz).chaveEsq = (**pai).chaveDir;
                         (**pai).chaveDir = (**pai).centro->chaveDir;
-                        free((**pai).centro->chaveDir);
+                        (**pai).centro->chaveDir = NULL;
                         (**pai).centro->nChaves = 1;
                     }
 
@@ -515,7 +497,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     {
                         (**pai).centro->chaveDir = (**pai).chaveDir;
                         (**pai).centro->nChaves = 2;
-                        free((**pai).chaveDir);
+                        (**pai).chaveDir = NULL;
                         (**pai).nChaves = 1;
                         *Raiz = NULL;
                     }
@@ -525,7 +507,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                         (**Raiz).chaveEsq = (**pai).chaveDir;
                         (**pai).chaveDir = (**pai).dir->chaveEsq;
                         (**pai).dir->chaveEsq = (**pai).dir->chaveDir;
-                        free((**pai).dir->chaveDir);
+                        (**pai).dir->chaveDir = NULL;
                         (**pai).dir->nChaves = 1;
                     }
 
@@ -534,7 +516,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                         (**Raiz).chaveEsq = (**pai).chaveDir;
                         (**Raiz).chaveDir = (**pai).dir->chaveEsq;
                         (**Raiz).nChaves = 2;
-                        free((**pai).chaveDir);
+                        (**pai).chaveDir = NULL;
                         (**pai).nChaves = 1;
                         (**pai).dir = NULL;
                     }
@@ -544,7 +526,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                         (**Raiz).chaveEsq = (**pai).chaveEsq;
                         (**pai).chaveEsq = (**pai).centro->chaveEsq;
                         (**pai).centro->chaveEsq = (**pai).centro->chaveDir;
-                        free((**pai).centro->chaveDir);
+                        (**pai).centro->chaveDir = NULL;
                         (**pai).centro->nChaves = 1;
                     }
 
@@ -556,7 +538,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
 
                         (**pai).chaveDir = (**pai).dir->chaveEsq;
                         (**pai).dir->chaveEsq = (**pai).dir->chaveDir;
-                        free((**pai).dir->chaveDir);
+                        (**pai).dir->chaveDir = NULL;
                         (**pai).dir->nChaves = 1;
                     }
 
@@ -565,7 +547,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                         (**Raiz).chaveEsq = (**pai).chaveEsq;
                         (**pai).chaveEsq = (**pai).centro->chaveEsq;
                         (**pai).centro->chaveEsq = (**pai).chaveDir;
-                        free((**pai).chaveDir);
+                        (**pai).chaveDir = NULL;
                         (**pai).nChaves = 1;
                         (**pai).centro->chaveDir = (**pai).dir->chaveEsq;
                         (**pai).centro->nChaves = 2;
@@ -579,7 +561,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     {
                         (**Raiz).chaveEsq = (**pai).chaveEsq;
                         (**pai).chaveEsq = (**pai).esq->chaveDir;
-                        free((**pai).esq->chaveDir);
+                        (**pai).esq->chaveDir = NULL;
                         (**pai).esq->nChaves = 1;
                     }
 
@@ -588,7 +570,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                         (**Raiz).chaveEsq = (**pai).chaveEsq;
                         (**pai).chaveEsq = (**pai).centro->chaveEsq;
                         (**pai).centro->chaveEsq = (**pai).centro->chaveDir;
-                        free((**pai).centro->chaveDir);
+                        (**pai).centro->chaveDir = NULL;
                         (**pai).centro->nChaves = 1;
                     }
 
@@ -617,14 +599,14 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     {
                         (**Raiz).chaveDir = (**Raiz).dir->chaveEsq;
                         (**Raiz).dir->chaveEsq = (**Raiz).dir->chaveDir;
-                        free((**Raiz).dir->chaveDir);
+                        (**Raiz).dir->chaveDir = NULL;
                         (**Raiz).dir->nChaves = 1;
                     }
 
                     else if ((**Raiz).centro->nChaves == 2)
                     {
                         (**Raiz).chaveDir = (**Raiz).centro->chaveDir;
-                        free((**Raiz).centro->chaveDir);
+                        (**Raiz).centro->chaveDir = NULL;
                         (**Raiz).centro->nChaves = 1;
                     }
 
@@ -632,7 +614,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     {
                         (**Raiz).centro->chaveDir = (**Raiz).dir->chaveEsq;
                         (**Raiz).centro->nChaves = 2;
-                        free((**Raiz).chaveDir);
+                        (**Raiz).chaveDir = NULL;
                         (**Raiz).nChaves = 2;
                         (**Raiz).dir = NULL;
                     }
@@ -644,14 +626,14 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     {
                         (**Raiz).chaveEsq = (**Raiz).centro->chaveEsq;
                         (**Raiz).centro->chaveEsq = (**Raiz).centro->chaveDir;
-                        free((**Raiz).centro->chaveDir);
+                        (**Raiz).centro->chaveDir = NULL;
                         (**Raiz).centro->nChaves = 1;
                     }
 
                     else if ((**Raiz).esq->nChaves == 2)
                     {
                         (**Raiz).chaveEsq = (**Raiz).esq->chaveDir;
-                        free((**Raiz).esq->chaveDir);
+                        (**Raiz).esq->chaveDir = NULL;
                         (**Raiz).esq->nChaves = 1;
                     }
 
@@ -661,15 +643,20 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                         (**Raiz).centro->chaveEsq = (**Raiz).chaveDir;
                         (**Raiz).chaveDir = (**Raiz).dir->chaveEsq;
                         (**Raiz).dir->chaveEsq = (**Raiz).dir->chaveDir;
-                        free((**Raiz).dir->chaveDir);
+                        (**Raiz).dir->chaveDir = NULL;
                         (**Raiz).dir->nChaves = 1;
                     }
                 }
             }
-        }
 
-        else if (info < (**Raiz).chaveEsq->cod)
+        }
+        
+
+        else if (info < (**Raiz).chaveEsq->cod){
+            printf("ANtes de excluir");
             excluirElemento(Raiz, &(**Raiz).esq, info);
+             printf("Depois de excluir");
+            }
 
         else if ((**Raiz).nChaves == 1)
             excluirElemento(Raiz, &(**Raiz).centro, info);
@@ -681,3 +668,22 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
             excluirElemento(Raiz, &(**Raiz).dir, info);
     }
 }
+// Função usada para verificar a quantidade de nos folhas em uma arvore 2 3, mas não esta sendo usada nessa tarefa
+// int qtdnofolha(Arv23 *Raiz)
+// {
+
+//     if (Raiz == NULL)
+//     {
+//         return 0;
+//     }
+
+//     else if (folha(Raiz))
+//     {
+//         return 1;
+//     }
+//     else
+//     {
+
+//         return 1 + (qtdnofolha(Raiz->dir) + qtdnofolha(Raiz->centro) + qtdnofolha(Raiz->esq));
+//     }
+// }

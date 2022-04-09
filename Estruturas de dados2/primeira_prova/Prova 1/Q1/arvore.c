@@ -69,7 +69,7 @@ int prof_menor(No *raiz)
 
     if (raiz == NULL)
     {
-        prof = -1;
+        prof = -1; //usado apenas para mostrar o valor certo da altura
     }
     else
     {
