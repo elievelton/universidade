@@ -16,14 +16,18 @@ int main()
 
     InsereCalcados(pai,&Arv23,1,"Tenis","Adidas",20,89.90,&sobe);
     InsereCalcados(pai,&Arv23,2,"Sapato_Tenis","Olimpicus",222,59.90,&sobe);
-    InsereCalcados(pai,&Arv23,3,"Sapato_Tenis","Olimpicus",228,89.90,&sobe); //Ta dando erro na hora de inserir mais 1 informação na hora que precisa quebrar o nó
-
+    InsereCalcados(pai,&Arv23,3,"sandala","Nike",29,890.90,&sobe); //Ta dando erro na hora de inserir mais 1 informação na hora que precisa quebrar o nó
+    InsereCalcados(pai,&Arv23,4,"Sapato social","Pegada",20,67.90,&sobe);
+    // InsereCalcados(pai,&Arv23,5,"Chinela","Havaiana",57,81.90,&sobe);
+    // InsereCalcados(pai,&Arv23,6,"Chinela","Dupe",90,29.90,&sobe);
+    // InsereCalcados(pai,&Arv23,7,"Sapato_Tenis","Olimpicus",12,19.90,&sobe);
     mostrarTudo(Arv23);//ta funcionando
+    
     //printf("%d ",(*Arv23).esq.chaveEsq.cod);
-    //busca(Arv23,2);//ta funcionando
-    excluirElemento(&pai,&Arv23,2); //ta dando erro de sementação, precisando averiguar
-    printf("----------------------\n");
-    mostrarTudo(Arv23);
+    //busca(Arv23,5);//ta funcionando
+    //excluirElemento(&pai,&Arv23,2); //ta dando erro de sementação, precisando averiguar
+    //printf("----------------------\n");
+    //mostrarTudo(Arv23);
     
     // clock_t t_ini, t_fim;
     // FILE *arq, *arq2;

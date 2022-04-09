@@ -36,7 +36,7 @@ Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, float preco)
 int busca(Arv23 *Raiz, int Valor)
 {
     int find = -1;
-    if (Raiz)
+    if (Raiz!=NULL)
     {
 
         if (Raiz->chaveEsq->cod == Valor)
@@ -130,9 +130,9 @@ void mostrar(Arv23 *Raiz)
 
 void mostrarTudo(Arv23 *Raiz)
 {
-    if (Raiz != NULL)
+    if (Raiz!=NULL)
     {
-
+        if(Raiz->nChaves == 1){
         printf(
             "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
 
@@ -143,8 +143,23 @@ void mostrarTudo(Arv23 *Raiz)
             Raiz->chaveEsq->preco,
             Raiz->nChaves);
 
-        if (Raiz->nChaves == 2)
+            mostrar(Raiz->esq);
+            mostrar(Raiz->centro);
+            mostrar(Raiz->dir);
+        
+        }
+        else 
         {
+            printf(
+
+                "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
+
+                Raiz->chaveEsq->cod,
+                Raiz->chaveEsq->tipo,
+                Raiz->chaveEsq->marca,
+                Raiz->chaveEsq->qtd,
+                Raiz->chaveEsq->preco,
+                Raiz->nChaves);
             printf(
 
                 "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
@@ -155,12 +170,14 @@ void mostrarTudo(Arv23 *Raiz)
                 Raiz->chaveDir->qtd,
                 Raiz->chaveDir->preco,
                 Raiz->nChaves);
+
+                mostrar(Raiz->esq);
+                mostrar(Raiz->centro);
+                mostrar(Raiz->dir);
         }
     }
 
-    mostrar(Raiz->esq);
-    mostrar(Raiz->centro);
-    mostrar(Raiz->dir);
+    
 }
 
 // Essa função é usada para criar um novo nó na Arv23
@@ -181,11 +198,12 @@ Arv23 *criaNO(Calcados *info, Arv23 *noEsq, Arv23 *noCentro)
 
 // Função usada pela insere23 para adicionar um novo nó
 Arv23 *adicionaNo(Arv23 *Raiz, Calcados *info, Arv23 *Novo)
-{
+{                                                       //Novo == MaiorNo
     if (info->cod > (*Raiz).chaveEsq->cod)
     {
         (*Raiz).chaveDir = info;
         (*Raiz).dir = Novo;
+
     }
     else // Faço apenas a troca de posição
     {
@@ -347,7 +365,7 @@ int altura(Arv23 *raiz)
 // Função para verificar se o elemento está na info 1 ou info 2 usado ela função de excluir
 int estaContido(Arv23 *Raiz, int info)
 {
-    printf("ESTACONTIDO\n");
+
     if (info == Raiz->chaveEsq->cod)
         return 1;
     if(Raiz->nChaves==2){
@@ -362,11 +380,10 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
 {
     if (*Raiz != NULL)
     {
-        printf("ANtes do estacontido");
+
         if (estaContido(*Raiz, info) != 0)
         {
-            printf("Depois do estacontido");
-
+ 
             if (*pai == NULL && folha(*Raiz)) // Verifica se a Raiz da Árvore é um nó Folha.
             {
                 if (estaContido(*Raiz, info) == 1)
@@ -468,7 +485,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
                     }
                 }else{
 
-                    print("Ajeitar");
+                    printf("Ajeitar para remover nó pai com 1 info");
                 }
             }
 
@@ -653,9 +670,9 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
         
 
         else if (info < (**Raiz).chaveEsq->cod){
-            printf("ANtes de excluir");
+            
             excluirElemento(Raiz, &(**Raiz).esq, info);
-             printf("Depois de excluir");
+             
             }
 
         else if ((**Raiz).nChaves == 1)
