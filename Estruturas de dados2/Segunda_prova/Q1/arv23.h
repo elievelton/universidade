@@ -3,10 +3,10 @@ typedef struct Calcados Calcados;
 
 void mostrar(Arv23 *Raiz);
 
-Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char tipo[], char marca[], int qtd, float preco, Calcados **infoMeio);
+Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char *tipo, char *marca, int qtd, int tam, int linha, float preco, Calcados **infoMeio);
 
-Calcados *criaCal(int cod, char tipo[], char marca[], int qtd, float preco);
-
+Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, int tamanho, int posicao_arquivo, float preco);
+void mostrarCalcado(Calcados *calcado);
 Arv23 *criaNO(Calcados *info, Arv23 *noEsq, Arv23 *noCentro);
 
 Arv23 *adicionaNo(Arv23 *No, Calcados *info, Arv23 *Novo);

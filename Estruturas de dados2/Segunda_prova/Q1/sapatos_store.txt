@@ -1,0 +1,4 @@
+1 tenis adidas 39 50 150.78
+2 sandalha avaianas 36 100 30.00
+3 sandalha avaianas 34 100 28.50
+4 sandalha avaianas 32 100 28.50

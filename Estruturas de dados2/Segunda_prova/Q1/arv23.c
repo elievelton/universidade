@@ -16,20 +16,36 @@ struct Calcados
     char *marca;
     int qtd;
     float preco;
+    int tamanho;
     int posicao_arquivo; // Deve guardar a posição de um caçado dentro do arquivo
 };
+
 // Alocando e criando um novo Calçado
-Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, float preco)
+Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, int tamanho, int posicao_arquivo, float preco)
 {
     Calcados *info = (Calcados *)malloc(sizeof(Calcados));
 
-    (*info).cod = cod;
-    (*info).tipo = tipo;
-    (*info).marca = marca;
-    (*info).qtd = qtd;
-    (*info).preco = preco;
-
+    info->cod = cod;
+    info->tipo = tipo;
+    info->marca = marca;
+    info->qtd = qtd;
+    info->preco = preco;
+    info->tamanho = tamanho;
+    info->posicao_arquivo = posicao_arquivo;
     return info;
+}
+
+void mostrarCalcado(Calcados *calcado)
+{
+    printf(
+        "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Tamanho: %d\n Quantidade: %d\n Preço(R$): %f\n",
+
+        calcado->cod,
+        calcado->tipo,
+        calcado->marca,
+        calcado->tamanho,
+        calcado->qtd,
+        calcado->preco);
 }
 
 // Fazendo uma busca pelo Id do calçado
@@ -98,7 +114,7 @@ void mostrar(Arv23 *Raiz)
         if (Raiz->nChaves == 1)
         {
             printf(
-                "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
+                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
 
                 Raiz->chaveEsq->cod,
                 Raiz->chaveEsq->tipo,
@@ -108,11 +124,22 @@ void mostrar(Arv23 *Raiz)
                 Raiz->nChaves);
         }
 
-        if (Raiz->nChaves == 2)
+        else if (Raiz->nChaves == 2)
         {
+
+            printf(
+                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
+
+                Raiz->chaveEsq->cod,
+                Raiz->chaveEsq->tipo,
+                Raiz->chaveEsq->marca,
+                Raiz->chaveEsq->qtd,
+                Raiz->chaveEsq->preco,
+                Raiz->nChaves);
+
             printf(
 
-                "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
+                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
 
                 Raiz->chaveDir->cod,
                 Raiz->chaveDir->tipo,
@@ -123,8 +150,8 @@ void mostrar(Arv23 *Raiz)
         }
 
         mostrar(Raiz->esq);
-        // mostrar(Raiz->centro);
-        // mostrar(Raiz->dir);
+        mostrar(Raiz->centro);
+        mostrar(Raiz->dir);
     }
 }
 
@@ -132,23 +159,11 @@ void mostrarTudo(Arv23 *Raiz)
 {
     if (Raiz != NULL)
     {
-
-        printf(
-            "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
-
-            Raiz->chaveEsq->cod,
-            Raiz->chaveEsq->tipo,
-            Raiz->chaveEsq->marca,
-            Raiz->chaveEsq->qtd,
-            Raiz->chaveEsq->preco,
-            Raiz->nChaves);
-
-        if (Raiz->nChaves == 2)
+        if (Raiz->nChaves == 1)
         {
-
             printf(
 
-                "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
+                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
 
                 Raiz->chaveEsq->cod,
                 Raiz->chaveEsq->tipo,
@@ -156,10 +171,23 @@ void mostrarTudo(Arv23 *Raiz)
                 Raiz->chaveEsq->qtd,
                 Raiz->chaveEsq->preco,
                 Raiz->nChaves);
-
+        }
+        else if (Raiz->nChaves == 2)
+        {
+            printf("printando direita\n");
             printf(
 
-                "Código[%d]\n Tipo[%s]\n Marca[%s]\n Quantidade[%d]\n PreçoR$:%f\n Numero de elementos : %d\n",
+                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
+
+                Raiz->chaveEsq->cod,
+                Raiz->chaveEsq->tipo,
+                Raiz->chaveEsq->marca,
+                Raiz->chaveEsq->qtd,
+                Raiz->chaveEsq->preco,
+                Raiz->nChaves);
+            printf(
+
+                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
 
                 Raiz->chaveDir->cod,
                 Raiz->chaveDir->tipo,
@@ -170,16 +198,17 @@ void mostrarTudo(Arv23 *Raiz)
         }
     }
 
-    mostrar(Raiz->esq);
-    mostrar(Raiz->centro);
-    mostrar(Raiz->dir);
+    mostrarTudo(Raiz->esq);
+    printf("finalizou esquerda");
+    mostrarTudo(Raiz->centro);
+    mostrarTudo(Raiz->dir);
 }
 
 // Essa função é usada para criar um novo nó na Arv23
 
 Arv23 *criaNO(Calcados *info, Arv23 *noEsq, Arv23 *noCentro)
 {
-    Arv23 *no = (Arv23 *)malloc(sizeof(Arv23));
+    Arv23 *no = (Arv23 *)calloc(sizeof(Arv23), 1);
 
     (*no).chaveEsq = info;
     (*no).chaveDir = NULL;
@@ -254,12 +283,10 @@ Arv23 *quebraNo(Arv23 **Raiz, Arv23 *NovoNo, Calcados *info, Calcados **infoMeio
     return Novo;
 }
 // chamar essa função no lugar da insere23 para inserir
-Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char *tipo, char *marca, int qtd, float preco, Calcados **infoMeio)
+Arv23 *InsereCalcados(Arv23 *pai, Arv23 **Raiz, int cod, char *tipo, char *marca, int qtd, int tam, int linha, float preco, Calcados **infoMeio)
 {
-
-    Calcados *info = criaCal(cod, tipo, marca, qtd, preco);
-
-    insere23(pai, Raiz, info, infoMeio);
+    Calcados *calcado = criaCal(cod, tipo, marca, qtd, tam, linha, preco);
+    insere23(pai, Raiz, calcado, infoMeio);
 }
 
 // Complemento da Insere Calcados
