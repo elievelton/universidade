@@ -1,4 +1,5 @@
-1 tenis adidas 39 50 150.78
-2 sandalha avaianas 36 100 30.00
-3 sandalha avaianas 34 100 28.50
-4 sandalha avaianas 32 100 28.50
+2 tenis adidas 36 100 30.000000
+4 tenis nike 32 1000 28.500000
+1 tenis nike 39 50 150.779999
+3 tenis olimpkus 34 300 28.500000
+5 tenis test 40 100 100.000000

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "arv23.h"
 
 struct Arv23
@@ -12,8 +13,8 @@ struct Arv23
 struct Calcados
 {
     int cod;
-    char *tipo;
-    char *marca;
+    char tipo[50];
+    char marca[50];
     int qtd;
     float preco;
     int tamanho;
@@ -26,8 +27,8 @@ Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, int tamanho, int po
     Calcados *info = (Calcados *)malloc(sizeof(Calcados));
 
     info->cod = cod;
-    info->tipo = tipo;
-    info->marca = marca;
+    strcpy(info->tipo, tipo);
+    strcpy(info->marca, marca);
     info->qtd = qtd;
     info->preco = preco;
     info->tamanho = tamanho;
@@ -35,69 +36,33 @@ Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, int tamanho, int po
     return info;
 }
 
-void mostrarCalcado(Calcados *calcado)
-{
-    printf(
-        "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Tamanho: %d\n Quantidade: %d\n Preço(R$): %f\n",
-
-        calcado->cod,
-        calcado->tipo,
-        calcado->marca,
-        calcado->tamanho,
-        calcado->qtd,
-        calcado->preco);
-}
-
 // Fazendo uma busca pelo Id do calçado
-int busca(Arv23 *Raiz, int Valor)
+Calcados *busca(Arv23 *Raiz, int Valor)
 {
-    int find = -1;
-    if (Raiz)
+    Calcados *find = NULL;
+    if (Raiz != NULL)
     {
-
-        if (Raiz->chaveEsq->cod == Valor)
+        if (Raiz->chaveEsq != NULL && Raiz->chaveEsq->cod == Valor)
         {
-            find = 1;
-            printf("--------Calçado encontrado com sucesso!----------\n");
-            mostrar(Raiz);
+            find = Raiz->chaveEsq;
         }
-
-        else if (Raiz->chaveDir->cod == Valor)
+        else if (Raiz->chaveDir != NULL && Raiz->chaveDir->cod == Valor)
         {
-            find = 1;
-            printf("----------Calçado encontrado com sucesso!-----------\n");
-            mostrar(Raiz);
+            find = Raiz->chaveDir;
         }
-        else if (Raiz->chaveEsq->cod != Valor)
-        {
-            find = 0;
-            printf("Produto Não encontrado\n");
-        }
-        else if (Raiz->chaveDir->cod != Valor)
-        {
-            find = 0;
-            printf("Produto Não encontrado\n");
-        }
-        if (Raiz == NULL)
-        {
-            find = 0;
-            printf("Produto Não encontrado\n");
-        }
-
-        if ((Raiz->nChaves == 1) && Valor < Raiz->chaveEsq->cod)
+        else if (Raiz->chaveEsq != NULL && (Raiz->nChaves == 1) && Valor < Raiz->chaveEsq->cod)
         {
             find = busca(Raiz->esq, Valor);
         }
-        else if ((Raiz->nChaves == 1) && Valor > Raiz->chaveEsq->cod)
+        else if (Raiz->chaveEsq != NULL & (Raiz->nChaves == 1) && Valor > Raiz->chaveEsq->cod)
         {
             find = busca(Raiz->centro, Valor);
         }
-
-        else if ((Raiz->nChaves == 2) && Valor < Raiz->chaveDir->cod)
+        else if (Raiz->chaveDir != NULL && (Raiz->nChaves == 2) && Valor < Raiz->chaveDir->cod)
         {
             find = busca(Raiz->centro, Valor);
         }
-        else if ((Raiz->nChaves == 2) && Valor > Raiz->chaveDir->cod)
+        else if (Raiz->chaveDir != NULL && (Raiz->nChaves == 2) && Valor > Raiz->chaveDir->cod)
         {
             find = busca(Raiz->dir, Valor);
         }
@@ -107,101 +72,48 @@ int busca(Arv23 *Raiz, int Valor)
 }
 
 // Função para mostrar os elemento de uma arvore o parametro Raiz->nChaves mostra quantas infos tem no No
-void mostrar(Arv23 *Raiz)
+void mostrar_calcado(Calcados *calcado)
 {
-    if (Raiz != NULL)
+
+    if (calcado != NULL)
     {
-        if (Raiz->nChaves == 1)
-        {
-            printf(
-                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
+        printf(
+            "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Tamanho: %d\n Quantidade: %d\n Preço(R$): %f\n Linha no arquivo: %d\n",
 
-                Raiz->chaveEsq->cod,
-                Raiz->chaveEsq->tipo,
-                Raiz->chaveEsq->marca,
-                Raiz->chaveEsq->qtd,
-                Raiz->chaveEsq->preco,
-                Raiz->nChaves);
-        }
-
-        else if (Raiz->nChaves == 2)
-        {
-
-            printf(
-                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
-
-                Raiz->chaveEsq->cod,
-                Raiz->chaveEsq->tipo,
-                Raiz->chaveEsq->marca,
-                Raiz->chaveEsq->qtd,
-                Raiz->chaveEsq->preco,
-                Raiz->nChaves);
-
-            printf(
-
-                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
-
-                Raiz->chaveDir->cod,
-                Raiz->chaveDir->tipo,
-                Raiz->chaveDir->marca,
-                Raiz->chaveDir->qtd,
-                Raiz->chaveDir->preco,
-                Raiz->nChaves);
-        }
-
-        mostrar(Raiz->esq);
-        mostrar(Raiz->centro);
-        mostrar(Raiz->dir);
+            calcado->cod,
+            calcado->tipo,
+            calcado->marca,
+            calcado->tamanho,
+            calcado->qtd,
+            calcado->preco,
+            calcado->posicao_arquivo);
     }
 }
 
-void mostrarTudo(Arv23 *Raiz)
+void calcado_atualizar_quantidade(Calcados *calcado, int qtd)
+{
+    calcado->qtd = qtd;
+}
+
+void mostrar_arv(Arv23 *Raiz)
 {
     if (Raiz != NULL)
     {
         if (Raiz->nChaves == 1)
         {
-            printf(
-
-                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
-
-                Raiz->chaveEsq->cod,
-                Raiz->chaveEsq->tipo,
-                Raiz->chaveEsq->marca,
-                Raiz->chaveEsq->qtd,
-                Raiz->chaveEsq->preco,
-                Raiz->nChaves);
+            mostrar_calcado(Raiz->chaveEsq);
         }
+
         else if (Raiz->nChaves == 2)
         {
-            printf("printando direita\n");
-            printf(
-
-                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
-
-                Raiz->chaveEsq->cod,
-                Raiz->chaveEsq->tipo,
-                Raiz->chaveEsq->marca,
-                Raiz->chaveEsq->qtd,
-                Raiz->chaveEsq->preco,
-                Raiz->nChaves);
-            printf(
-
-                "\n-------Código: %d --------\n Tipo: %s\n Marca: %s\n Quantidade: %d\n Preço(R$): %f\n Numero de elementos : %d\n",
-
-                Raiz->chaveDir->cod,
-                Raiz->chaveDir->tipo,
-                Raiz->chaveDir->marca,
-                Raiz->chaveDir->qtd,
-                Raiz->chaveDir->preco,
-                Raiz->nChaves);
+            mostrar_calcado(Raiz->chaveEsq);
+            mostrar_calcado(Raiz->chaveDir);
         }
-    }
 
-    mostrarTudo(Raiz->esq);
-    printf("finalizou esquerda");
-    mostrarTudo(Raiz->centro);
-    mostrarTudo(Raiz->dir);
+        mostrar_arv(Raiz->esq);
+        mostrar_arv(Raiz->centro);
+        mostrar_arv(Raiz->dir);
+    }
 }
 
 // Essa função é usada para criar um novo nó na Arv23
@@ -732,3 +644,50 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
 //         return 1 + (qtdnofolha(Raiz->dir) + qtdnofolha(Raiz->centro) + qtdnofolha(Raiz->esq));
 //     }
 // }
+
+void salvar_arvore(FILE *arq, Arv23 *Raiz)
+{
+    if (Raiz != NULL)
+    {
+        if (Raiz->nChaves == 1)
+        {
+
+            fprintf(arq, "%d %s %s %d %d %f", Raiz->chaveEsq->cod, Raiz->chaveEsq->tipo, Raiz->chaveEsq->marca, Raiz->chaveEsq->tamanho, Raiz->chaveEsq->qtd, Raiz->chaveEsq->preco);
+            fputs("\n", arq);
+        }
+
+        else if (Raiz->nChaves == 2)
+        {
+            fprintf(arq, "%d %s %s %d %d %f", Raiz->chaveEsq->cod, Raiz->chaveEsq->tipo, Raiz->chaveEsq->marca, Raiz->chaveEsq->tamanho, Raiz->chaveEsq->qtd, Raiz->chaveEsq->preco);
+            fputs("\n", arq);
+            if (Raiz->chaveDir != NULL)
+            {
+                fprintf(arq, "%d %s %s %d %d %f", Raiz->chaveDir->cod, Raiz->chaveDir->tipo, Raiz->chaveDir->marca, Raiz->chaveDir->tamanho, Raiz->chaveDir->qtd, Raiz->chaveDir->preco);
+                fputs("\n", arq);
+            }
+        }
+
+        salvar_arvore(arq, Raiz->esq);
+        salvar_arvore(arq, Raiz->centro);
+        salvar_arvore(arq, Raiz->dir);
+    }
+}
+
+Arv23 *liberarArvore(Arv23 *Raiz)
+{
+    if (Raiz != NULL)
+    {
+        if (folha(Raiz))
+        {
+            free(Raiz->chaveEsq);
+            free(Raiz->chaveDir);
+            free(Raiz);
+            return NULL;
+        }
+
+        Raiz->esq = liberarArvore(Raiz->esq);
+        Raiz->centro = liberarArvore(Raiz->centro);
+        Raiz->dir = liberarArvore(Raiz->dir);
+        return NULL;
+    }
+}
