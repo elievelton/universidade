@@ -4,31 +4,146 @@
 #include <time.h>
 
 int menu();
+void inserir_calcado_no_arquivo(int codigo, char *tipo, char *marca, int quantidade, int tamanho, float preco);
+void atualizar_arquivo(Arv23 *Raiz);
+
 int main()
 {
-
     double t_total, t_insec_total;
+    int codigo;
+    int tamanho;
+    int quantidade;
+    float preco;
+    int linha;
+    char tipo[50];
+    char marca[50];
     int opcao = 0;
-    Arv23 *Arv23,*pai ;
-    Calcados *sobe = NULL;
-    pai =NULL;;
+    Arv23 *Arv23, *pai;
+    Calcados *sobe = NULL, *calcado_buscado = NULL;
+    pai = NULL;
     Arv23 = NULL;
 
-    InsereCalcados(pai,&Arv23,1,"Tenis","Adidas",20,89.90,&sobe);
-    InsereCalcados(pai,&Arv23,2,"Sapato_Tenis","Olimpicus",222,59.90,&sobe);
-    InsereCalcados(pai,&Arv23,3,"sandala","Nike",29,890.90,&sobe); //Ta dando erro na hora de inserir mais 1 informação na hora que precisa quebrar o nó
-    InsereCalcados(pai,&Arv23,4,"Sapato social","Pegada",20,67.90,&sobe);
-    // InsereCalcados(pai,&Arv23,5,"Chinela","Havaiana",57,81.90,&sobe);
-    // InsereCalcados(pai,&Arv23,6,"Chinela","Dupe",90,29.90,&sobe);
-    // InsereCalcados(pai,&Arv23,7,"Sapato_Tenis","Olimpicus",12,19.90,&sobe);
-    mostrarTudo(Arv23);//ta funcionando
+    FILE *arq;
+    arq = fopen("sapatos_store.txt", "rt");
     
-    //printf("%d ",(*Arv23).esq.chaveEsq.cod);
-    //busca(Arv23,5);//ta funcionando
-    //excluirElemento(&pai,&Arv23,2); //ta dando erro de sementação, precisando averiguar
-    //printf("----------------------\n");
-    //mostrarTudo(Arv23);
-    
+    int linhas = 1;
+    if (arq == NULL)
+    {
+        printf("Problemas na abertura do arquivo\n");
+    }
+    else
+    {
+        while (!feof(arq))
+        {
+            int codigo;
+            int tamanho;
+            int quantidade;
+            float preco;
+            char tipo[50];
+            char marca[50];
+            fscanf(arq, "%d %s %s %d %d %f\n", &codigo, tipo, marca, &tamanho, &quantidade, &preco);
+            InsereCalcados(pai, &Arv23, codigo, tipo, marca, quantidade, tamanho, linhas, preco, &sobe);
+            linhas++;
+        }
+    }
+    fclose(arq);
+
+    do
+    {
+        opcao = menu();
+        switch (opcao)
+        {
+        case 1:
+            printf("Digite o codigo do Calcado: ");
+            scanf(" %d", &codigo);
+            printf("Digite o tipo do Calcado: ");
+            scanf(" %s", tipo);
+            printf("Digite o marca do Calcado: ");
+            scanf(" %s", marca);
+            printf("Digite o tamanho do Calcado: ");
+            scanf(" %d", &tamanho);
+            printf("Digite a quantidade do Calcado: ");
+            scanf(" %d", &quantidade);
+            printf("Digite o preco do Calcado: ");
+            scanf(" %f", &preco);
+            linhas++;
+            InsereCalcados(pai, &Arv23, codigo, tipo, marca, quantidade, tamanho, linhas, preco, &sobe);
+            inserir_calcado_no_arquivo(codigo, tipo, marca, quantidade, tamanho, preco);
+            //atualizar_arquivo(Arv23);
+            
+            break;
+        case 2:
+            printf("Digite o codigo do Calcado: ");
+            scanf(" %d", &codigo);
+
+            calcado_buscado = busca(Arv23, codigo);
+
+            if (calcado_buscado == NULL)
+            {
+                printf("Calcado nao encontrado\n");
+            }
+            else
+            {
+                printf("Digite a nova quantidade em estoque: ");
+                scanf(" %d", &quantidade);
+                if (quantidade > 0)
+                {
+                    printf("Nao e possivel definir uma quantidade menor que 0\n");
+                }
+                else
+                {
+                    calcado_atualizar_quantidade(calcado_buscado, quantidade);
+                    atualizar_arquivo(Arv23);
+                }
+            }
+            calcado_buscado = NULL;
+            break;
+        case 3:
+            mostrar_arv(Arv23);
+            break;
+        case 4:
+            printf("Digite o codigo do Calcado: ");
+            scanf(" %d", &codigo);
+
+            calcado_buscado = busca(Arv23, codigo);
+
+            if (calcado_buscado == NULL)
+            {
+                printf("Calcado nao encontrado\n");
+            }
+            else
+            {
+                mostrar_calcado(calcado_buscado);
+            }
+            calcado_buscado = NULL;
+            break;
+        case 5:
+            
+            printf("Digite o código do calçado para remover: \n");
+            scanf(" %d", &codigo);
+            //excluirElemento(&pai,&Arv23, codigo);
+            linha = busca_linha(Arv23, codigo);
+            //remover_arquivo(arq, linha);
+            printf("Linha %d \n", linha);
+
+
+            break;
+
+        default:
+            atualizar_arquivo(Arv23);
+            Arv23 = liberarArvore(Arv23);
+            printf("\nEscolha uma opcao válida\n");
+            break;
+        }
+    } while (opcao != 0);
+
+    // ta funcionando
+    // // printf("%d ",(*Arv23).esq.chaveEsq.cod);
+    // // busca(Arv23,2);//ta funcionando
+    // excluirElemento(&pai, &Arv23, 2); // ta dando erro de sementação, precisando averiguar
+    // printf("----------------------\n");
+    // mostrarTudo(Arv23);
+
     // clock_t t_ini, t_fim;
     // FILE *arq, *arq2;
     // srand(time(NULL));
@@ -36,11 +151,12 @@ int main()
     // do
     // {
     //     opcao = menu();
-    //     switch (opcao)
+    //     switch (opcao)if (arq == NULL)
+
     //     {
     //     case 1:
-    //     ;  
-    
+    //     ;
+
     //     default:
     //         break;
     //     }
@@ -52,13 +168,45 @@ int main()
     return 0;
 }
 
-// int menu()
-// {
-//     int opcao;
-//     puts("MENU");
-//     puts("1 - Inserir Calçado");
+void inserir_calcado_no_arquivo(int codigo, char *tipo, char *marca, int quantidade, int tamanho, float preco)
+{
+    FILE *arq;
+    arq = fopen("sapatos_store.txt", "ab");
+    if (arq == NULL)
+    {
+        printf("Problemas na abertura do arquivo\n");
+    }
 
-//     puts("Escolha uma das opções: ");
-//     scanf(" %d", &opcao);
-//     return opcao;
-// }
+    fputs("\n", arq);
+    fprintf(arq, "%d %s %s %d %d %f", codigo, tipo, marca, tamanho, quantidade, preco);
+
+    fclose(arq);
+}
+
+void atualizar_arquivo(Arv23 *Raiz)
+{
+    FILE *arq;
+    arq = fopen("sapatos_store.txt", "w");
+    if (arq == NULL)
+    {
+        printf("Problemas na abertura do arquivo\n");
+    }
+    salvar_arvore(arq, Raiz);
+
+    fclose(arq);
+}
+
+int menu()
+{
+    int opcao;
+    printf("\n\n-------------------MENU-------------------\n");
+    printf("1 - Inserir Novo Calçado\n");
+    printf("2 - Atualizar a quantidade de um Calcado\n");
+    printf("3 - Mostrar todos os calcados\n");
+    printf("4 - Mostrar delalhes de um calcados\n");
+    printf("5 - Deletar um calcado\n");
+    printf("0 - Sair\n");
+    printf("Escolha uma das opções: ");
+    scanf(" %d", &opcao);
+    return opcao;
+}

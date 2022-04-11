@@ -15,6 +15,9 @@ int main()
     insere23(Pai, &Raiz, 1, &sobe);
 	insere23(Pai, &Raiz, 2, &sobe);
 	insere23(Pai, &Raiz, 3, &sobe);
+    insere23(Pai, &Raiz, 4, &sobe);
+	insere23(Pai, &Raiz, 5, &sobe);
+	
 	
 	
 
