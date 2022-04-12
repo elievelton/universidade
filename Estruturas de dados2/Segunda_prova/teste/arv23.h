@@ -38,5 +38,3 @@ void salvar_arvore(FILE *arq, Arv23 *Raiz);
 void mostrar_calcado(Calcados *calcado);
 
 Arv23 *liberarArvore(Arv23 *Raiz);
-int busca_linha(Arv23 *Raiz, int Valor);
-void remover_arquivo(FILE *arq,int linha_main);

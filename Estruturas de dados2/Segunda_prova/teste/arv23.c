@@ -35,39 +35,6 @@ Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, int tamanho, int po
     info->posicao_arquivo = posicao_arquivo;
     return info;
 }
-int busca_linha(Arv23 *Raiz, int Valor)
-{
-    int find = -1;
-    if (Raiz != NULL)
-    {
-        if (Raiz->chaveEsq != NULL && Raiz->chaveEsq->cod == Valor)
-        {
-            find = Raiz->chaveEsq->posicao_arquivo;
-        }
-        else if (Raiz->chaveDir != NULL && Raiz->chaveDir->cod == Valor)
-        {
-            find = Raiz->chaveDir->posicao_arquivo;
-        }
-        else if (Raiz->chaveEsq != NULL && (Raiz->nChaves == 1) && Valor < Raiz->chaveEsq->cod)
-        {
-            find = busca_linha(Raiz->esq, Valor);
-        }
-        else if (Raiz->chaveEsq != NULL & (Raiz->nChaves == 1) && Valor > Raiz->chaveEsq->cod)
-        {
-            find = busca_linha(Raiz->centro, Valor);
-        }
-        else if (Raiz->chaveDir != NULL && (Raiz->nChaves == 2) && Valor < Raiz->chaveDir->cod)
-        {
-            find = busca_linha(Raiz->centro, Valor);
-        }
-        else if (Raiz->chaveDir != NULL && (Raiz->nChaves == 2) && Valor > Raiz->chaveDir->cod)
-        {
-            find = busca_linha(Raiz->dir, Valor);
-        }
-    }
-
-    return find;
-}
 
 // Fazendo uma busca pelo Id do calçado
 Calcados *busca(Arv23 *Raiz, int Valor)
@@ -130,7 +97,7 @@ void calcado_atualizar_quantidade(Calcados *calcado, int qtd)
 
 void mostrar_arv(Arv23 *Raiz)
 {
-    if (Raiz!=NULL)
+    if (Raiz != NULL)
     {
         if (Raiz->nChaves == 1)
         {

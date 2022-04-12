@@ -25,7 +25,6 @@ int main()
 
     FILE *arq;
     arq = fopen("sapatos_store.txt", "rt");
-    
     int linhas = 1;
     if (arq == NULL)
     {
@@ -118,15 +117,7 @@ int main()
             calcado_buscado = NULL;
             break;
         case 5:
-            
-            printf("Digite o código do calçado para remover: \n");
-            scanf(" %d", &codigo);
-            //excluirElemento(&pai,&Arv23, codigo);
-            linha = busca_linha(Arv23, codigo);
-            //remover_arquivo(arq, linha);
-            printf("Linha %d \n", linha);
-
-
+            /* code */
             break;
 
         default:
@@ -171,14 +162,14 @@ int main()
 void inserir_calcado_no_arquivo(int codigo, char *tipo, char *marca, int quantidade, int tamanho, float preco)
 {
     FILE *arq;
-    arq = fopen("sapatos_store.txt", "ab");
+    arq = fopen("sapatos_store.txt", "ab+");
     if (arq == NULL)
     {
         printf("Problemas na abertura do arquivo\n");
     }
 
     fputs("\n", arq);
-    fprintf(arq, "%d %s %s %d %d %f", codigo, tipo, marca, tamanho, quantidade, preco);
+    fprintf(arq, "%d %s %s %d %d %.2f", codigo, tipo, marca, tamanho, quantidade, preco);
 
     fclose(arq);
 }
