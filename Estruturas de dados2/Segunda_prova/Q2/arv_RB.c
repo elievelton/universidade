@@ -26,7 +26,7 @@ struct Calcados
     int tamanho;
     int posicao_arquivo; // Deve guardar a posição de um caçado dentro do arquivo
 };
-
+// Cria um objeto calçado
 Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, int tamanho, int posicao_arquivo, float preco)
 {
     Calcados *info = (Calcados *)malloc(sizeof(Calcados));
@@ -40,7 +40,7 @@ Calcados *criaCal(int cod, char *tipo, char *marca, int qtd, int tamanho, int po
     info->posicao_arquivo = posicao_arquivo;
     return info;
 }
-
+// Essa função é usada para inserir um novo calçado
 No *InsereCalcados(No **Raiz, int cod, char *tipo, char *marca, int qtd, int tam, int linha, float preco)
 {
     Calcados *calcado = criaCal(cod, tipo, marca, qtd, tam, linha, preco);
@@ -80,7 +80,7 @@ void inserir (No** raiz, Calcados* elemento) {
     ajustar(novo, raiz);
 }
 
-//falta revisar dessa parte para baixo
+//Não estou usando essa função, criammos para para testes, estamos usando a função imprimir
 void preorder(No* raiz){
     if(raiz == NULL) ;
     else {
@@ -112,7 +112,7 @@ void preorder(No* raiz){
         preorder(raiz->dir);
     }
 }
-
+// usada para ccria um no nulo, para ultilizar em uma situação especifica de rotação
 No* criar_nulo(No* pai){
   No* nulo = (No*) malloc(sizeof(No));
   nulo->info = NULL;
@@ -122,28 +122,28 @@ No* criar_nulo(No* pai){
   nulo->dir = NULL;
   return nulo;
 }
-
+// Verifica ca cor do Nó
 Cor cor(No* no) {
     if(no == NULL || no->cor == PRETO)
         return PRETO;
     else
         return VERMELHO;
 }
-
+// Indentificados o filho da esquerda
 int eh_esquerdo(No* no) {
     if(no == no->pai->esq)
         return 1;
     else
         return 0;
 }
-
+// indentificamos o pai
 int eh_raiz(No* no) {
     if(no->pai == NULL)
         return 1;
     else
         return 0;
 }
-
+// retornamos o imão de um nó
 No* irmao(No *no){
     if(eh_esquerdo(no) == 1){
         return no->pai->dir;
@@ -152,14 +152,14 @@ No* irmao(No *no){
         return no->pai->esq;
     }
 }
-
+//retornamos o tio de um no
 No* tio (No* no) {
     if(eh_esquerdo(no->pai) == 1)
         return no->pai->pai->dir;
     else
         return no->pai->pai->esq;
 }
-
+//buscamos o maio elemento 
 No* maior_elemento(No* raiz){
     if(raiz == NULL || raiz->dir == NULL){
         return raiz;
@@ -168,7 +168,7 @@ No* maior_elemento(No* raiz){
         return maior_elemento(raiz->dir);
     }
 }
-
+// fazemos ajustes de botação e cor em um nó quando ele é inserido na arvore
 void ajustar(No* no, No** raiz) {
     if(eh_raiz(no) == 1) {
         no->cor = PRETO;
@@ -205,7 +205,7 @@ void ajustar(No* no, No** raiz) {
         }
     }
 }
-
+ // fazemos a rotação simples Direita
 void rotacao_simples_direita(No* pivo, No **raiz){
     No* u = pivo->esq;
     pivo->esq = u->dir;
@@ -229,7 +229,7 @@ void rotacao_simples_direita(No* pivo, No **raiz){
     u->dir = pivo;
     pivo->pai = u;
 }
-
+// rotação simples  direita
 void rotacao_simples_esquerda(No* pivo, No** raiz){
     No* u = pivo->dir;
     pivo->dir = u->esq;
@@ -254,7 +254,7 @@ void rotacao_simples_esquerda(No* pivo, No** raiz){
     u->esq = pivo;
     pivo->pai = u;
 }
-
+// rotação dupla direita
 void rotacao_dupla_direita(No* pivo, No** raiz){
   pivo->cor = VERMELHO;
   pivo->esq->dir->cor = PRETO;
@@ -263,6 +263,7 @@ void rotacao_dupla_direita(No* pivo, No** raiz){
   rotacao_simples_direita(pivo, raiz);
 }
 
+//Rotação dupla esquerda
 void rotacao_dupla_esquerda(No *pivo,No **raiz){
   pivo->cor = VERMELHO;
   pivo->dir->esq->cor = PRETO;
@@ -270,7 +271,7 @@ void rotacao_dupla_esquerda(No *pivo,No **raiz){
   rotacao_simples_direita(pivo->dir, raiz);
   rotacao_simples_esquerda(pivo, raiz);
 }
-
+//Removendo um elemento do nó
 void remover(No** raiz,int valor){
   No* temp = (*raiz);
   No* no = NULL;
@@ -286,7 +287,7 @@ void remover(No** raiz,int valor){
     }
   }
   if(temp == NULL){
-        puts("Entrou aqui! Remover 229");
+        puts("Entrou aqui! Remover 229");// testando um problema na remoção
   }
   if(cor(no) == VERMELHO){
     if(eh_esquerdo(no) == 1){
@@ -499,7 +500,7 @@ void reajustar(No* nulo,No** raiz){
 }
 
 
-
+// Estamos imprimindo colorido para ficar mais simples de visualizar e identificar possiveis erros
 void imprimir(No *raiz){
     //  Essa função imprime os elementos de forma recursiva
 
