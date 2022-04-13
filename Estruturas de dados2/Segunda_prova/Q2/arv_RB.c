@@ -287,7 +287,8 @@ void remover(No** raiz,int valor){
     }
   }
   if(temp == NULL){
-        puts("Entrou aqui! Remover 229");// testando um problema na remoção
+        temp=NULL;
+        return;// testando um problema na remoção
   }
   if(cor(no) == VERMELHO){
     if(eh_esquerdo(no) == 1){
@@ -504,7 +505,7 @@ void reajustar(No* nulo,No** raiz){
 void imprimir(No *raiz){
     //  Essa função imprime os elementos de forma recursiva
 
-    printf("(");    //  notação para organizar na hora de mostrar os elementos
+   
     if(raiz) {  //  se a árvore não for vazia...
         //  Mostra os elementos em pré-ordem
         if(raiz->cor == VERMELHO){
@@ -538,7 +539,7 @@ void imprimir(No *raiz){
         imprimir(raiz->esq);   //  mostra a sae (subárvore à esquerda)
         imprimir(raiz->dir);   //  mostra a sad (subárvore à direita)
     }
-    printf(")");    //  notação para organizar na hora de mostrar os elementos
+    
 }
 
 //FazerProcura na Arvore usando na função remover

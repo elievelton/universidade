@@ -6,21 +6,21 @@
 int main(){
     No* arvore=NULL;
 
-    inserir(&arvore,100);
-    inserir(&arvore,200);
-    inserir(&arvore,300);
-    inserir(&arvore,50);
-    inserir(&arvore,150);
-    inserir(&arvore,120);
-    inserir(&arvore,10);
-    inserir(&arvore,1200);
+    inserir(&arvore,1);
+    inserir(&arvore,2);
+    inserir(&arvore,3);
+    inserir(&arvore,4);
+    inserir(&arvore,5);
+    // inserir(&arvore,120);
+    // inserir(&arvore,10);
+    // inserir(&arvore,1200);
 
 
 
     imprimir(arvore);
     printf("\n");
-    //remover(&main, 14);
-    //imprimir(main);
+    remover(&arvore, 2);
+    imprimir(arvore);
 
     return 0;
 }
