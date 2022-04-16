@@ -98,3 +98,5 @@
 97 Tenis nike 40 100 210.000000
 99 Tenis nike 40 100 210.000000
 100 Tenis nike 40 100 210.000000
+102 test test 32 100 30.00
+103 test test 2 2 2.00

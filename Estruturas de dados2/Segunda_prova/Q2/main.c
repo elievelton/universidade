@@ -184,7 +184,6 @@ void inserir_calcado_no_arquivo(int codigo, char *tipo, char *marca, int quantid
     {
         printf("Problemas na abertura do arquivo\n");
     }
-
     fputs("\n", arq);
     fprintf(arq, "%d %s %s %d %d %.2f", codigo, tipo, marca, tamanho, quantidade, preco);
 
