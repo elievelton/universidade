@@ -1,5 +1,6 @@
 #ifndef RB_H
 #define RB_H
+#include <stdio.h>
 
 typedef enum Cor
 {

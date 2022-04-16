@@ -14,7 +14,6 @@ struct No
   No *esq, *dir, *pai;
 };
 
-No *externo = NULL;
 
 struct Calcados
 {
@@ -646,21 +645,18 @@ void imprimir(No *raiz)
 
 // FazerProcura na Arvore usando na função remover
 
-No *buscar(No *raiz, int valor)
+No *buscar(No *raiz, int num)
 {
-  if (raiz == externo || raiz->info->cod == valor)
-  {
-    return raiz;
-  }
-  if (valor < raiz->info->cod)
-  {
-    buscar(raiz->esq, valor);
-  }
-  else
-  {
-    buscar(raiz->dir, valor);
-  }
-  return raiz;
+    if (raiz)
+    {
+        if (num == raiz->info->cod)
+            return raiz;
+        else if (num < raiz->info->cod)
+            return buscar(raiz->esq, num);
+        else
+            return buscar(raiz->dir, num);
+    }
+    return NULL;
 }
 
 Calcados *buscar_calcados(No *raiz, int valor)

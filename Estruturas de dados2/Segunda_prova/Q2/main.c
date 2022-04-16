@@ -5,6 +5,9 @@
 
 // int main(){
 //     No* Raiz=NULL;
+//     Calcados* teste = NULL;
+    
+    
 
 //     InsereCalcados(&Raiz, 1, "sapato", "Olipikus", 10, 32, 1, 34.8);
 //     InsereCalcados(&Raiz, 2, "sapato_tenis", "adidas", 12, 41, 2, 74.8);
@@ -16,8 +19,11 @@
 //     imprimir(Raiz);
 //     printf("\n");
 //     puts("\n================================");
-//     remover(&Raiz,2);
-//     imprimir(Raiz);
+//     //remover(&Raiz,2);
+//     //imprimir(Raiz);
+//     puts("\n================================");
+//     teste = buscar_calcados(Raiz,5);
+//     mostrar_calcado(teste);
 
 //     return 0;
 // }
@@ -145,33 +151,7 @@ int main()
         }
     } while (opcao != 0);
 
-    // ta funcionando
-    // // printf("%d ",(*Raiz).esq.chaveEsq.cod);
-    // // busca(Raiz,2);//ta funcionando
-    // excluirElemento(&pai, &Raiz, 2); // ta dando erro de sementação, precisando averiguar
-    // printf("----------------------\n");
-    // mostrarTudo(Raiz);
 
-    // clock_t t_ini, t_fim;
-    // FILE *arq, *arq2;
-    // srand(time(NULL));
-    // arq = fopen("tempo_de_busca.txt", "w");;
-    // do
-    // {
-    //     opcao = menu();
-    //     switch (opcao)if (arq == NULL)
-
-    //     {
-    //     case 1:
-    //     ;
-
-    //     default:
-    //         break;
-    //     }
-    // } while (opcao != 0);
-    // puts("Resultados salvos no arquivo");
-    // printf("Resultados salvos no arquivo 'tempo_de_insercao.txt'!\n");
-    // fclose(arq);
 
     return 0;
 }
