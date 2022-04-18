@@ -18,6 +18,9 @@ int main()
     char tipo[50];
     char marca[50];
     int opcao = 0;
+    int codigo_buscado;
+    double tempo_in[30], busca_tempo[30];
+    clock_t t_ini, t_fim;
     Arv23 *Arv23, *pai;
     Calcados *sobe = NULL, *calcado_buscado = NULL;
     pai = NULL;
@@ -68,8 +71,8 @@ int main()
             linhas++;
             InsereCalcados(pai, &Arv23, codigo, tipo, marca, quantidade, tamanho, linhas, preco, &sobe);
             inserir_calcado_no_arquivo(codigo, tipo, marca, quantidade, tamanho, preco);
-            //atualizar_arquivo(Arv23);
-            
+            // atualizar_arquivo(Arv23);
+
             break;
         case 2:
             printf("Digite o codigo do Calcado: ");
@@ -85,7 +88,7 @@ int main()
             {
                 printf("Digite a nova quantidade em estoque: ");
                 scanf(" %d", &quantidade);
-                if (quantidade > 0)
+                if (quantidade < 0)
                 {
                     printf("Nao e possivel definir uma quantidade menor que 0\n");
                 }
@@ -119,7 +122,24 @@ int main()
         case 5:
             /* code */
             break;
-
+        case 6:
+            t_ini = clock();
+            for (int i = 0; i < 30; i++)
+            {
+                codigo_buscado = (rand() % 1000);
+                printf("------< Codigo: %d >------\n", codigo_buscado);
+                if (busca_personalizada(Arv23, 2) == NULL)
+                {
+                    printf("Codigo não encontrado\n");
+                }
+                else
+                {
+                    printf("Codigo encontrado\n");
+                }
+            }
+            t_fim = clock();
+            printf("Tempo para buscar os 30 items: %lf", (double)(t_fim - t_ini) / CLOCKS_PER_SEC);
+            break;
         default:
             atualizar_arquivo(Arv23);
             Arv23 = liberarArvore(Arv23);
@@ -196,6 +216,7 @@ int menu()
     printf("3 - Mostrar todos os calcados\n");
     printf("4 - Mostrar delalhes de um calcados\n");
     printf("5 - Deletar um calcado\n");
+    printf("6 - Executar testes de busca\n");
     printf("0 - Sair\n");
     printf("Escolha uma das opções: ");
     scanf(" %d", &opcao);

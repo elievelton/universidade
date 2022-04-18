@@ -6,8 +6,6 @@
 // int main(){
 //     No* Raiz=NULL;
 //     Calcados* teste = NULL;
-    
-    
 
 //     InsereCalcados(&Raiz, 1, "sapato", "Olipikus", 10, 32, 1, 34.8);
 //     InsereCalcados(&Raiz, 2, "sapato_tenis", "adidas", 12, 41, 2, 74.8);
@@ -45,7 +43,9 @@ int main()
     int opcao = 0;
     No *Raiz = NULL;
     Calcados *calcado_buscado = NULL;
-
+    int codigo_buscado;
+    double tempo_in[30], busca_tempo[30];
+    clock_t t_ini, t_fim;
     FILE *arq;
     arq = fopen("sapatos_store.txt", "rt");
     int linhas = 1;
@@ -141,6 +141,24 @@ int main()
         case 5:
             /* code */
             break;
+        case 6:
+            t_ini = clock();
+            for (int i = 0; i < 30; i++)
+            {
+                codigo_buscado = (rand() % 1000);
+                printf("------< Codigo: %d >------\n", codigo_buscado);
+                if (busca_personalizada(Raiz, codigo_buscado) == NULL)
+                {
+                    printf("Codigo não encontrado\n");
+                }
+                else
+                {
+                    printf("Codigo encontrado\n");
+                }
+            }
+            t_fim = clock();
+            printf("Tempo para buscar os 30 items: %lf", (double)(t_fim - t_ini) / CLOCKS_PER_SEC);
+            break;
         case 0:
             // atualizar_arquivo(Raiz);
             // Raiz = liberarArvore(Raiz);
@@ -150,8 +168,6 @@ int main()
             break;
         }
     } while (opcao != 0);
-
-
 
     return 0;
 }
@@ -192,6 +208,7 @@ int menu()
     printf("3 - Mostrar todos os calcados\n");
     printf("4 - Mostrar delalhes de um calcados\n");
     printf("5 - Deletar um calcado\n");
+    printf("6 - Executar testes de busca\n");
     printf("0 - Sair\n");
     printf("Escolha uma das opções: ");
     scanf(" %d", &opcao);

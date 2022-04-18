@@ -14,7 +14,6 @@ struct No
   No *esq, *dir, *pai;
 };
 
-
 struct Calcados
 {
   int cod;
@@ -647,16 +646,31 @@ void imprimir(No *raiz)
 
 No *buscar(No *raiz, int num)
 {
-    if (raiz)
-    {
-        if (num == raiz->info->cod)
-            return raiz;
-        else if (num < raiz->info->cod)
-            return buscar(raiz->esq, num);
-        else
-            return buscar(raiz->dir, num);
-    }
-    return NULL;
+  if (raiz)
+  {
+    if (num == raiz->info->cod)
+      return raiz;
+    else if (num < raiz->info->cod)
+      return buscar(raiz->esq, num);
+    else
+      return buscar(raiz->dir, num);
+  }
+  return NULL;
+}
+
+No *busca_personalizada(No *raiz, int valor)
+{
+  if (raiz)
+  {
+    printf("---> %d\n", raiz->info->cod);
+    if (valor == raiz->info->cod)
+      return raiz;
+    else if (valor < raiz->info->cod)
+      return buscar(raiz->esq, valor);
+    else
+      return buscar(raiz->dir, valor);
+  }
+  return NULL;
 }
 
 Calcados *buscar_calcados(No *raiz, int valor)

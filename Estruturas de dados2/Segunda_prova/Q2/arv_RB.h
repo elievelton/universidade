@@ -33,6 +33,7 @@ No *irmao(No *no);
 No *tio(No *no);
 No *maior_elemento(No *raiz);
 No *buscar(No *raiz, int valor);
+No *busca_personalizada(No *raiz, int valor);
 Calcados *buscar_calcados(No *raiz, int valor);
 void calcado_atualizar_quantidade(Calcados *calcado, int qtd);
 void salvar_arvore(FILE *arq, No *Raiz);

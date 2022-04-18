@@ -70,7 +70,46 @@ Calcados *busca(Arv23 *Raiz, int Valor)
 
     return find;
 }
+Calcados *busca_personalizada(Arv23 *Raiz, int Valor)
+{
+    Calcados *find = NULL;
+    if (Raiz != NULL)
+    {
+        if (Raiz->chaveEsq != NULL)
+        {
+            printf("---> %d\n", Raiz->chaveEsq->cod);
+        }
+        else if (Raiz->chaveDir != NULL)
+        {
+            printf("---> %d\n", Raiz->chaveDir->cod);
+        }
 
+        if (Raiz->chaveEsq != NULL && Raiz->chaveEsq->cod == Valor)
+        {
+            find = Raiz->chaveEsq;
+        }
+        else if (Raiz->chaveDir != NULL && Raiz->chaveDir->cod == Valor)
+        {
+            find = Raiz->chaveDir;
+        }
+        else if (Raiz->chaveEsq != NULL && (Raiz->nChaves == 1) && Valor < Raiz->chaveEsq->cod)
+        {
+            find = busca(Raiz->esq, Valor);
+        }
+        else if (Raiz->chaveEsq != NULL & (Raiz->nChaves == 1) && Valor > Raiz->chaveEsq->cod)
+        {
+            find = busca(Raiz->centro, Valor);
+        }
+        else if (Raiz->chaveDir != NULL && (Raiz->nChaves == 2) && Valor < Raiz->chaveDir->cod)
+        {
+            find = busca(Raiz->centro, Valor);
+        }
+        else if (Raiz->chaveDir != NULL && (Raiz->nChaves == 2) && Valor > Raiz->chaveDir->cod)
+        {
+            find = busca(Raiz->dir, Valor);
+        }
+    }
+}
 // Função para mostrar os elemento de uma arvore o parametro Raiz->nChaves mostra quantas infos tem no No
 void mostrar_calcado(Calcados *calcado)
 {
@@ -134,12 +173,11 @@ Arv23 *criaNO(Calcados *info, Arv23 *noEsq, Arv23 *noCentro)
 
 // Função usada pela insere23 para adicionar um novo nó
 Arv23 *adicionaNo(Arv23 *Raiz, Calcados *info, Arv23 *Novo)
-{                                                       //Novo == MaiorNo
+{ // Novo == MaiorNo
     if (info->cod > (*Raiz).chaveEsq->cod)
     {
         (*Raiz).chaveDir = info;
         (*Raiz).dir = Novo;
-
     }
     else // Faço apenas a troca de posição
     {
@@ -318,7 +356,7 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
 
         if (estaContido(*Raiz, info) != 0)
         {
- 
+
             if (*pai == NULL && folha(*Raiz)) // Verifica se a Raiz da Árvore é um nó Folha.
             {
                 if (estaContido(*Raiz, info) == 1)
@@ -608,11 +646,11 @@ int excluirElemento(Arv23 **pai, Arv23 **Raiz, int info)
             }
         }
 
-        else if (info < (**Raiz).chaveEsq->cod){
-            
+        else if (info < (**Raiz).chaveEsq->cod)
+        {
+
             excluirElemento(Raiz, &(**Raiz).esq, info);
-             
-            }
+        }
 
         else if ((**Raiz).nChaves == 1)
             excluirElemento(Raiz, &(**Raiz).centro, info);
@@ -671,20 +709,23 @@ void salvar_arvore(FILE *arq, Arv23 *Raiz)
         salvar_arvore(arq, Raiz->dir);
     }
 }
-void remover_arquivo(FILE *arq,int linha_main){
+void remover_arquivo(FILE *arq, int linha_main)
+{
 
 #define LEN 1001
 
-arq = fopen("sapatos_store.txt","w+"); // w+ read/write
-char texto[LEN]; // não precisa iniciar valor...
-unsigned int linha_atual = 1;
-while(fgets(texto, LEN, arq) != NULL){
-    if(linha_atual != linha_main){ // desnecessário linha_selecionada se vc só usa para comparar...
-        fputs(texto, arq);
+    arq = fopen("sapatos_store.txt", "w+"); // w+ read/write
+    char texto[LEN];                        // não precisa iniciar valor...
+    unsigned int linha_atual = 1;
+    while (fgets(texto, LEN, arq) != NULL)
+    {
+        if (linha_atual != linha_main)
+        { // desnecessário linha_selecionada se vc só usa para comparar...
+            fputs(texto, arq);
+        }
+        linha_atual++;
     }
-    linha_atual++;
-}
-fclose(arq);
+    fclose(arq);
 }
 
 Arv23 *liberarArvore(Arv23 *Raiz)

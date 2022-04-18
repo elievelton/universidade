@@ -38,3 +38,5 @@ void salvar_arvore(FILE *arq, Arv23 *Raiz);
 void mostrar_calcado(Calcados *calcado);
 
 Arv23 *liberarArvore(Arv23 *Raiz);
+
+Calcados *busca_personalizada(Arv23 *Raiz, int Valor);
