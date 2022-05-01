@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include <conio.h>
+#include <gconio.h>
 #include <locale.h>
 #include <limits.h>
 #define vertice int
@@ -130,7 +130,7 @@ void imprimeAjacenteColuna(Grafo g){
     printf("\n");
 }
 
-// Verifica se um vertice v é adjacente a um vertice w.
+// Verifica se um vertice v é adjacente(vizinho) a um vertice w.
 
 void isAdjacente(Grafo g, vertice v, vertice w){
 
@@ -530,7 +530,7 @@ int main(){
                     printf("Escolha o vertice final: ");
                     scanf("%d", &ver2);
 
-                    int ant[g1->ver];
+                    int ant[g1->Ver];
                     float dist[g1->Ver];
 
 
