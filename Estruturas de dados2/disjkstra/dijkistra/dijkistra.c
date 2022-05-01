@@ -1,563 +1,236 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <gconio.h>
-#include <locale.h>
-#include <limits.h>
-#define vertice int
+#include "dijkistra.h"
 
-// Estrutura do grafo, Ver � a quantidade de vertices, verX e verY s�o as coordenadas de cada vertice, Ar � a quantidade de arestas e adjacencia
-// é a matriz de adjacencia que representa as liga��es entre os vertices.
-
-struct grafo{
-
-    int Ver;
-    int *VerX;
-    int *VerY;
-    int Ar;
-    int **adjacencia;
-
+struct grafos
+{
+    int ehPonderado; // se ele é podenrado ele será atribuído peso, se não , não terá pesos
+    int nVertices;   // tenho que definir antes de criar o grafo o numero de vertices
+    int **arestas;   // guarda as conexões que é uma matriz
+    float **pesos;   // usado apenas em graficos ponderados
+    int *grau;       // numeros de arestas que chegam ou partem dele
 };
 
-// Definindo o tipo Grafo.
+Grafo *criaGrafo(int Vertices, int ehPonderado)
+{
+    Grafo *gr;
+    gr = (Grafo *)malloc(sizeof(struct grafos));
+    if (gr != NULL)
+    {
+        gr->nVertices = Vertices;
+        gr->ehPonderado = (ehPonderado != 0) ? 1 : 0;    // comando ternario equivalente ao if e else
+        gr->grau = (int *)calloc(Vertices, sizeof(int)); // inserindo zero para marca todos inicialemnte como não visitados, sem aresta
+        gr->arestas = (int **)malloc(Vertices * sizeof(int *));
 
-typedef struct grafo *Grafo;
-
-// Alocação de matriz, as variaveis r e c determinam a quantidade de linhas e colunas enquanto a val é o valor de cada posi��o.
-
-static int **Matriz(int r, int c, int val){
-
-    int **matriz = malloc(r * sizeof(int *));
-
-    for(vertice i = 0; i < r; ++i){
-        matriz[i] = malloc(c * sizeof(int));
-    }
-    for(vertice i = 0; i < r; ++i){
-        for(vertice j = 0; j < r; ++j)
-            matriz[i][j] = val;
-    }
-    return matriz;
-}
-
-// Inicialização de um grafo com 0 arrestas e v para quantidade de vertices.
-
-Grafo constroiGrafo(int v){
-
-    Grafo G = malloc(sizeof *G);
-    G->Ver = v;
-    G->VerX = malloc(v*sizeof(int *));
-    G->VerY = malloc(v*sizeof(int *));
-    G->Ar = 0;
-    G->adjacencia = Matriz(v,v,0);
-
-    return G;
-
-}
-
-// Preenche as coordenadas do vertice com numeros aleatorios.
-
-void preencheCoordenada(Grafo g){
-
-    for(vertice v = 0; v < g->Ver; ++v){
-        g->VerX[v] = rand() % 100;
-        g->VerY[v] = rand() % 100;
-    }
-
-    for(vertice v = 0; v < g->Ver; ++v){
-        printf("Coordenadas do vertice %d, x = %d, y = %d\n", v, g->VerX[v], g->VerY[v]);
-    }
-
-}
-
-// Exibir a matriz de adjacencia por completo.
-
-void exibeMatriz(Grafo g){
-    for(vertice v = 0; v < g->Ver; ++v){
-        for(vertice w = 0; w < g->Ver; ++w)
-            printf("%d  ", g->adjacencia[v][w]);
-        printf("\n");
-    }
-    printf("\n");
-}
-
-// Insere uma aresta com peso passado por parametro entre os vertices v-w no grafo caso essa aresta nao exista.
-
-void insereAresta(Grafo g, vertice v, vertice w, int peso){
-
-    if(g->adjacencia[v][w] == 0){
-        g->adjacencia[v][w] = peso;
-        g->adjacencia[w][v] = peso;
-        g->Ar++;
-    }
-}
-
-// remove uma aresta vw no grafo caso exista.
-
-void removeAresta(Grafo g, vertice v, vertice w){
-    if(g->adjacencia[v][w] != 0){
-        g->adjacencia[v][w] = 0;
-        g->Ar--;
-    }
-}
-
-// imprime a adjacencia de cada vertice por linha.
-
-void imprimeAjacenteLinha(Grafo g){
-
-    for(vertice v = 0; v < g->Ver; ++v){
-        printf("\nAdjacentes de %2d: ", v);
-        for(vertice w = 0; w < g->Ver; ++w){
-            if(g->adjacencia[v][w] != 0){
-                printf("%2d, ", w);
+        for (int i = 0; i < Vertices; i++) // Matriz de arestas
+        {
+            gr->arestas[i] = (int *)malloc(Vertices * sizeof(int));
+        }
+        if (gr->ehPonderado) // Matriz de pesos
+        {
+            gr->pesos = (float **)malloc(Vertices * sizeof(float *));
+            for (int i = 0; i < Vertices; i++)
+            {
+                gr->pesos[i] = (float *)malloc(Vertices * sizeof(float));
             }
         }
     }
-    printf("\n");
+    return gr;
 }
-
-// imprime a adjacencia de cada vertice por coluna.
-
-void imprimeAjacenteColuna(Grafo g){
-
-    for(vertice w = 0; w < g->Ver; ++w){
-        printf("\n%2d: ", w);
-        for(vertice v = 0; v < g->Ver; ++v){
-            if(g->adjacencia[v][w] != 0){
-                printf("%2d", v);
+void liberaGrafo(Grafo *gr)
+{
+    if (gr != NULL)
+    {
+        int i;
+        for (int i = 0; i < gr->nVertices; i++)
+            free(gr->arestas[i]);
+        free(gr->arestas);
+        if (gr->ehPonderado)
+        {
+            for (int i = 0; i < gr->nVertices; i++)
+                free(gr->pesos[i]);
+            free(gr->pesos);
+        }
+        free(gr->grau);
+        free(gr);
+    }
+}
+int insereAresta(Grafo *gr, int origem, int destino, int digrafo, float peso)
+{
+    int criou = 0;
+    if (gr != NULL)
+    {
+        if (origem >= 0 && origem < gr->nVertices)
+        {
+            if (destino >= 0 && destino < gr->nVertices)
+            {
+                gr->arestas[origem][gr->grau[origem]] = destino;
+                if (gr->ehPonderado)
+                    gr->pesos[origem][gr->grau[origem]] = peso;
+                (gr->grau[origem])++;
+                if (digrafo == 0)
+                    insereAresta(gr, destino, origem, 1, peso);
+                criou = 1;
             }
         }
     }
-    printf("\n");
+    return criou;
 }
 
-// Verifica se um vertice v é adjacente(vizinho) a um vertice w.
+/*
+Partindo de um vertice inicial, ela consegu explorar todos os vertices vizinhos.
+Em seguida, para cada vertice vizinho ela repete esse processo, visitando os vertices inesplorados.
+Pode ser usado para :
+    achar todos vertices conectados a um componente
 
-void isAdjacente(Grafo g, vertice v, vertice w){
+*/
 
-    bool s = false;
+void busca_em_largura_grafo(Grafo *gr, int ini, int *visitado)
+{
+    int i, vert, Novo_Vertice, cont = 1;
+    int *fila, Inicial_fila = 0, Final_fila = 0;
+    for (i = 0; i < gr->nVertices; i++) // preenchendo todos os vertices como não visitados
+        visitado[i] = 0;
 
-    if(g->adjacencia[v][w] != 0)
-        s = true;
-    else if(g->adjacencia[w][v] != 0)
-        s = true;
+    // criando fila e inserindo ini na fila
+    Novo_Vertice = gr->nVertices;
+    fila = (int *)malloc(Novo_Vertice * sizeof(int));
+    Final_fila++;
+    fila[Final_fila] = ini;
+    visitado[ini] = cont;
+    // while pega o primeiro da fila
+    while (Inicial_fila != Final_fila) // A fila está vazia?
+    {
+        // Recuperando o vertice que ta no inicio da fila
+        Inicial_fila = (Inicial_fila + 1) % Novo_Vertice;
+        vert = fila[Inicial_fila];
+        cont++;
 
-    if(s)
-        printf("O vertice %d eh adjacente ao vertice %d com o peso da aresta de: %d\n", v, w, g->adjacencia[v][w]);
-    else
-        printf("Os vertices informados nao sao adjacentes\n");
-}
-
-// Edita as coordenadas do vertice v, recebendo as novas coordenadas x e y por parametro.
-
-void editaCoordenada(Grafo g, vertice v, int x, int y){
-
-    g->VerX[v] = x;
-    g->VerY[v] = y;
-
-}
-
-// Mostra as coordenadas de todos os vertices do grafo passado por parametro
-
-void mostraCoordenada(Grafo g){
-
-    for(vertice w = 0; w < g->Ver; ++w){
-        printf("Coordenadas do vertice %d, x = %d, y = %d\n", w, g->VerX[w], g->VerY[w]);
-    }
-}
-
-// Verifica o proximo vertice adjacente de um vertice ver.
-
-void primAdjacente(Grafo g, vertice ver){
-
-        for(vertice w = 0; w < g->Ver; ++w){
-            if(g->adjacencia[ver][w] != 0){
-                printf("Primeiro adjacente de %d sera: %2d, peso: %d\n", ver, w, g->adjacencia[ver][w]);
-                break;
+        // visita visinhos ainda não visitados e coloca na fila
+        for (i = 0; i < gr->grau[vert]; i++)
+        {
+            if (!visitado[gr->arestas[vert][i]]) // Ele já foi visitado ?
+            {
+                // colocando todos os vertices não visitados dentro da fila
+                Final_fila = (Final_fila + 1) % Novo_Vertice;
+                fila[Final_fila] = gr->arestas[vert][i];
+                visitado[gr->arestas[vert][i]] = cont;
             }
+        }
     }
+    free(fila);
+    // mostrando o grafo
+    for (i = 0; i < gr->nVertices; i++)
+        printf("%d -> %d\n", i, visitado[i]);
 }
 
-// Verifica o proximo vertice adjacente de um vertice x adjacente a um vertice y.
+/*
+    Partindo de um vertice inicial, ela explora o máximo possível os seus ramos antes de retroceder.
+    Em seguida, para cada vertice vizinho ela repete esse processo, visitando os vertices inesplorados.
+    Pode ser usado para :
+        encontrar componentes conecatos em um labirinto, onde alguns vertices podem ser vistos
+        apenas de determinados vertices.
+*/
+// Função principal de busca em profundidade
 
-void proxAdjacenteInformado(Grafo g, vertice x, vertice y){
+void busca_em_profundidade_grafo(Grafo *gr, int ini, int *visitado)
+{
+    int i, cont = 1;
+    for (size_t i = 0; i < gr->nVertices; i++)
+        visitado[i] = 0; // para marca todos como não visitados inicialmente
 
-    for(vertice w = y+1; w < g->Ver; ++w){
-            if(g->adjacencia[x][w] != 0){
-                printf("Proximo adjacente de %d sera: %2d, peso: %d\n", x, w, g->adjacencia[x][w]);
-                break;
-            }
-    }
+    func_aux_busca_profundidade(gr, ini, visitado, cont);
 
+    for (i = 0; i < gr->nVertices; i++)
+        printf("%d -> %d\n", i, visitado[i]);
 }
 
-// Importa o grafo de um arquivo de texto.
-
-Grafo importarGrafo(char *path){
-
-    FILE *file;
-
-    file = fopen(path, "r");
+// função auxiliar da busca em profundidade
+void func_aux_busca_profundidade(Grafo *gr, int ini, int *visitado, int cont)
+{
     int i;
-    int qntVertices = 0;
-    int qntArestas = 0;
+    visitado[ini] = cont;
 
-    fscanf(file, "%d\n", &qntVertices);
-    Grafo g = constroiGrafo(qntVertices);
-
-    for(i = 0; i < qntVertices; i++){
-
-        int ver = 0, verX = 0, verY = 0;
-        fscanf(file, "%d %d %d\n", &ver, &verX, &verY);
-        editaCoordenada(g, ver, verX, verY);
-    }
-
-    fscanf(file, "%d\n", &qntArestas);
-
-    for(i = 0; i < qntArestas; i++){
-
-        int v = 0, w = 0, peso = 0;
-        fscanf(file, "%d %d %d\n", &v, &w, &peso);
-        insereAresta(g, v, w, peso);
-    }
-
-    return g;
-}
-
-// Exporta o grafo para um arquivo de texto.
-
-void exportarGrafo(Grafo g, char *path){
-
-
-    FILE *file;
-
-    file = fopen(path, "w");
-    int i, j;
-    int qntVertices = g->Ver;
-    int qntArestas = g->Ar;
-
-    fprintf(file, "%d\n", qntVertices);
-
-    for(i = 0; i < qntVertices; i++){
-
-        fprintf(file, "%d %d %d\n", i, g->VerX[i], g->VerY[i]);
-    }
-
-    fprintf(file, "%d\n", qntArestas);
-
-    for(i = 0; i < qntVertices; i++){
-        for( j = 0; j < qntVertices; j++){
-            if(g->adjacencia[i][j] != 0)
-                fprintf(file, "%d %d %d\n", i, j, g->adjacencia[i][j]);
+    for (size_t i = 0; i < gr->grau[ini]; i++)
+    {
+        if (!visitado[gr->arestas[ini][i]]) // ele ja foi visitado?
+        {
+            func_aux_busca_profundidade(gr, gr->arestas[ini][i], visitado, cont + 1); // chamada recursiva para verificar o próximo vertice
         }
-    }
+    };
 }
 
-
-int procuraMenorDistancia(float *dist, int *visitado, int nv){
-
-    int i, menor = INT_MAX, primeiro = 1;
-
-    for(i = 0; i < nv; i++){
-
-        if(dist[i] < menor && visitado[i] == 0){
-            if(primeiro){
+// Função auxiliar da funão dijkistra
+int procuraMenorDistancia(float *dist, int *visitado, int NV)
+{
+    int i, menor = -1, primeiro = 1;
+    for (i = 0; i < NV; i++)
+    {
+        if (dist[i] >= 0 && visitado[i] == 0)
+        {
+            if (primeiro)
+            {
                 menor = i;
                 primeiro = 0;
-            }else{
-                if(dist[menor] > dist[i])
+            }
+            else
+            {
+                if (dist[menor] > dist[i])
                     menor = i;
             }
         }
     }
     return menor;
 }
-
-void menorCaminho(Grafo g, int ini, int *ant, float *dist, int v2){
-
-    int i, cont = 0, NaoVisitado = 0, ind = 0, *visitado, vertice_processado = 0;
-
-    cont = g->Ver;
-    NaoVisitado = g->Ver;
-
-    visitado = (int*) malloc(NaoVisitado * sizeof(int));
-
-    for(i = 0; i < NaoVisitado; i++){
-
+//Função Dijkistra para procurar o menor caminho
+void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist)
+{
+    int i, cont, NV, ind, *visitado, vert;
+    cont = NV = gr->nVertices;
+    visitado = (int *)malloc(NV * sizeof(int));
+    for (i = 0; i < NV; i++)
+    {
         ant[i] = -1;
-        dist[i] = INT_MAX;
+        dist[i] = -1;
         visitado[i] = 0;
     }
-
     dist[ini] = 0;
+    while (cont > 0)
+    {
+        vert = procuraMenorDistancia(dist, visitado, NV);
+        // printf("u = %d\n",u);
+        if (vert == -1)
+            break;
 
-    while(cont > 0){
-
-        vertice_processado = procuraMenorDistancia(dist, visitado, NaoVisitado);
-
-        visitado[vertice_processado] = 1;
-
+        visitado[vert] = 1;
         cont--;
-
-        int vizinho;
-
-        for(vizinho = 0; vizinho < g->Ver; vizinho++){
-
-            if(g->adjacencia[vertice_processado][vizinho] > 0){
-
-                ind = g->adjacencia[vertice_processado][vizinho] + dist[vertice_processado];
-
-                if(ind < dist[vizinho]){
-
-                    ant[vizinho] = vertice_processado;
-                    dist[vizinho] = ind;
+        for (i = 0; i < gr->grau[vert]; i++)
+        {
+            ind = gr->arestas[vert][i];
+            if (dist[ind] < 0)
+            {
+                dist[ind] = dist[vert] + 1; // ou peso da aresta
+                ant[ind] = vert;
+            }
+            else
+            {
+                if (dist[ind] > dist[vert] + 1)
+                {
+                    dist[ind] = dist[vert] + 1; // ou peso da aresta
+                    ant[ind] = vert;
                 }
-                ind = 0;
             }
         }
     }
-
-    printf("\n\n Distância de %d até %d é = %.0f \n", ini, v2, dist[v2]);
 
     free(visitado);
-
 }
 
- // Função principal, onde fica o menu e as chamadas das funções que componhem o editor de grafo
-
-int main(){
-
-    setlocale(LC_ALL, "portuguese");
-
-    int condicao = 0, escolha = 0;
-    bool grafoCriado = false;
-    Grafo g1;
-
-
-    while(condicao == 0){
-
-        system("cls");
-
-        printf("    --- Editor de Grafos ---    \n");
-        printf(" --- 1. Importar um grafo de um arquivo de texto --- \n");
-        printf(" --- 2. Criar um grafo vazio a partir de um numero de vertices informado pelo usuario --- \n");
-        printf(" --- 3. Exibir a matriz de adjacencias --- \n");
-        printf(" --- 4. Consultar se um v�rtice � adjacente a outro --- \n");
-        printf(" --- 5. Inserir novas arestas --- \n");
-        printf(" --- 6. Remover arestas --- \n");
-        printf(" --- 7. Editar a coodernada dos v�rtices --- \n");
-        printf(" --- 8. Consultar o primeiro adjacente de um v�rtice --- \n");
-        printf(" --- 9. Consultar o pr�ximo adjacente de um v�rtice a partir de um adjacente informado --- \n");
-        printf(" --- 10. Consultar a lista completa de adjacentes --- \n");
-        printf(" --- 11. Exportar grafo para um arquivo de texto --- \n");
-        printf(" --- 12. Procurar menor caminho a partir de um vertice --- \n");
-        printf(" --- 13. Sair --- \n");
-        printf(" ---==: ");
-        scanf("%d", &escolha);
-
-        if(escolha == 1){
-
-            char path[50];
-            system("cls");
-            printf("Nome do arquivo (exemplo.txt) : ");
-            scanf("%s", path);
-            g1 = importarGrafo(path);
-            system("pause");
-            grafoCriado = true;
-
-        }
-        else if(escolha == 2){
-
-            vertice v = 0;
-            system("cls");
-            printf("N�mero de v�rtices : ");
-            scanf("%d", &v);
-            g1 = constroiGrafo(v);
-            system("pause");
-            preencheCoordenada(g1); // Gerando coordenadas aleatorias para o vertice, eles podem ser alterados com a funcao editaCoordenada
-            grafoCriado = true;
-
-        }
-        else if(escolha == 3){
-
-            system("cls");
-            if(grafoCriado){
-                exibeMatriz(g1);
-                system("pause");
-            }else{
-                printf("Grafo nao iniciado\n");
-                system("pause");
-            }
-
-        }
-        else if(escolha == 4){
-
-
-            if(grafoCriado){
-                int v=0, w=0;
-                system("cls");
-                printf("Vertice 1 = ");
-                scanf("%d", &v);
-                printf("Vertice 2 = ");
-                scanf("%d", &w);
-                isAdjacente(g1, v, w);
-                system("pause");
-            }else{
-                printf("Grafo nao iniciado\n");
-                system("pause");
-            }
-
-        }
-        else if(escolha == 5){
-            system("cls");
-            if(grafoCriado){
-                int a = 0, b = 0, peso;
-                printf("Vertice 1 : ");
-                scanf("%d", &a);
-                printf("Vertice 2 : ");
-                scanf("%d", &b);
-                printf("Peso : ");
-                scanf("%d", &peso);
-
-                insereAresta(g1, a, b, peso);
-
-                system("pause");
-            }else{
-                printf("Grafo nao iniciado\n");
-                system("pause");
-            }
-        }
-        else if(escolha == 6){
-
-            system("cls");
-            if(grafoCriado){
-                int a = 0, b = 0;
-                printf("Vertice 1 : ");
-                scanf("%d", &a);
-                printf("Vertice 2 : ");
-                scanf("%d", &b);
-
-                removeAresta(g1, a, b);
-
-                system("pause");
-            }else{
-                printf("Grafo nao iniciado\n");
-                system("pause");
-            }
-        }
-        else if(escolha == 7){
-            system("cls");
-            if(grafoCriado){
-
-                int x = 0, y = 0, ver = 0;
-
-                printf("Vertice : ");
-                scanf("%d", &ver);
-                printf("Coordenada X : ");
-                scanf("%d", &x);
-                printf("Coordebada Y : ");
-                scanf("%d", &y);
-
-                editaCoordenada(g1, ver, x, y);
-                mostraCoordenada(g1);
-
-                system("pause");
-            }else{
-                printf("Grafo nao iniciado\n");
-                system("pause");
-            }
-        }
-        else if(escolha == 8){
-            system("cls");
-            if(grafoCriado){
-                int v = 0;
-                printf("Vertice : ");
-                scanf("%d", &v);
-                primAdjacente(g1, v);
-
-                system("pause");
-            }else{
-                printf("Grafo nao iniciado\n");
-                system("pause");
-            }
-        }
-        else if(escolha == 9){
-            system("cls");
-            if(grafoCriado){
-                int v = 0, w = 0;
-                printf("Vertice : ");
-                scanf("%d", &v);
-                printf("Adjacente : ");
-                scanf("%d", &w);
-                proxAdjacenteInformado(g1, v, w);
-
-                system("pause");
-            }else{
-                printf("Grafo nao iniciado\n");
-                system("pause");
-            }
-
-        }
-        else if(escolha == 10){
-            system("cls");
-            if(grafoCriado){
-                imprimeAjacenteLinha(g1);
-                system("pause");
-            }else{
-                printf("Grafo nao iniciado\n");
-                system("pause");
-            }
-        }
-        else if(escolha == 11){
-            system("cls");
-            if(grafoCriado){
-                char nome[50];
-                printf("Nome do arquivo (exemplo.txt) : ");
-                scanf("%s", nome);
-                exportarGrafo(g1, nome);
-                system("pause");
-            }else{
-                printf("Grafo nao iniciado\n");
-                system("pause");
-            }
-        }
-        else if(escolha == 12){
-
-                system("cls");
-                if(grafoCriado){
-                    int ver = 0, ver2 = 0;
-                    printf("Escolha o vertice de origem: ");
-                    scanf("%d", &ver);
-                    printf("Escolha o vertice final: ");
-                    scanf("%d", &ver2);
-
-                    int ant[g1->Ver];
-                    float dist[g1->Ver];
-
-
-                    menorCaminho(g1, ver, ant, dist, ver2);
-                    int i;
-
-
-                    for(i = 0; i < 5; i++){
-
-                        printf("v�rtice = %d // antecessor = %d / distancia = %.0f \n",i ,ant[i], dist[i]);
-
-                    }
-                    system("pause");
-                }else{
-                printf("Grafo nao iniciado\n");
-                system("pause");
-            }
-
-        }
-        else if(escolha == 13){
-            condicao++;
-        }
-        else {
-            system("cls");
-            printf("Escolha incorreta\n");
-            system("pause");
-        }
-
-    }
+void mostraGrafo(Grafo *gr)
+{
+    printf("origem \t\t destino \n");
+    for (int i = 0; i < gr->nVertices; i++)
+        for (int d = 0; d < gr->grau[i]; d++)
+            if (gr->arestas[i][d] != 0)
+                printf("%d \t\t %d \n", i, gr->arestas[i][d]);
 }
