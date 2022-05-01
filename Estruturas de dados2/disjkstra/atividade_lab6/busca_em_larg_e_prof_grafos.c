@@ -10,66 +10,68 @@ struct grafos
     float **pesos;   // usado apenas em graficos ponderados
     int *grau;       // numeros de arestas que chegam ou partem dele
 };
-
+// funcao de criar o grafo
 Grafo *criaGrafo(int Vertices, int ehPonderado)
 {
-    Grafo *gr;
-    gr = (Grafo *)malloc(sizeof(struct grafos));
-    if (gr != NULL)
+    Grafo *g;
+    g = (Grafo *)malloc(sizeof(struct grafos));
+    if (g != NULL)
     {
-        gr->nVertices = Vertices;
-        gr->ehPonderado = (ehPonderado != 0) ? 1 : 0;    // comando ternario equivalente ao if e else
-        gr->grau = (int *)calloc(Vertices, sizeof(int)); // inserindo zero para marca todos inicialemnte como não visitados, sem aresta
-        gr->arestas = (int **)malloc(Vertices * sizeof(int *));
+        g->nVertices = Vertices;
+        g->ehPonderado = (ehPonderado != 0) ? 1 : 0;    // comando ternário equivalente ao if e else
+        g->grau = (int *)calloc(Vertices, sizeof(int)); // inserindo zero para marca todos inicialemnte como não visitados, sem aresta
+        g->arestas = (int **)malloc(Vertices * sizeof(int *));
 
         for (int i = 0; i < Vertices; i++) // Matriz de arestas
         {
-            gr->arestas[i] = (int *)malloc(Vertices * sizeof(int));
+            g->arestas[i] = (int *)malloc(Vertices * sizeof(int));
         }
-        if (gr->ehPonderado) // Matriz de pesos
+        if (g->ehPonderado) // Matriz de pesos 
         {
-            gr->pesos = (float **)malloc(Vertices * sizeof(float *));
+            g->pesos = (float **)malloc(Vertices * sizeof(float *));
             for (int i = 0; i < Vertices; i++)
             {
-                gr->pesos[i] = (float *)malloc(Vertices * sizeof(float));
+                g->pesos[i] = (float *)malloc(Vertices * sizeof(float));
             }
         }
     }
-    return gr;
+    return g;
 }
-void liberaGrafo(Grafo *gr)
+// função para liberar o grafo
+void liberaGrafo(Grafo *g)
 {
-    if (gr != NULL)
+    if (g != NULL)
     {
         int i;
-        for (int i = 0; i < gr->nVertices; i++)
-            free(gr->arestas[i]);
-        free(gr->arestas);
-        if (gr->ehPonderado)
+        for (int i = 0; i < g->nVertices; i++)
+            free(g->arestas[i]);
+        free(g->arestas);
+        if (g->ehPonderado)
         {
-            for (int i = 0; i < gr->nVertices; i++)
-                free(gr->pesos[i]);
-            free(gr->pesos);
+            for (int i = 0; i < g->nVertices; i++)
+                free(g->pesos[i]);
+            free(g->pesos);
         }
-        free(gr->grau);
-        free(gr);
+        free(g->grau);
+        free(g);
     }
 }
-int insereAresta(Grafo *gr, int origem, int destino, int digrafo, float peso)
+// função para inserir aresta
+int insereAresta(Grafo *g, int origem, int destino, int digrafo, float peso)
 {
     int criou = 0;
-    if (gr != NULL)
+    if (g != NULL)
     {
-        if (origem >= 0 && origem < gr->nVertices)
+        if (origem >= 0 && origem < g->nVertices)
         {
-            if (destino >= 0 && destino < gr->nVertices)
+            if (destino >= 0 && destino < g->nVertices)
             {
-                gr->arestas[origem][gr->grau[origem]] = destino;
-                if (gr->ehPonderado)
-                    gr->pesos[origem][gr->grau[origem]] = peso;
-                (gr->grau[origem])++;
+                g->arestas[origem][g->grau[origem]] = destino;
+                if (g->ehPonderado)
+                    g->pesos[origem][g->grau[origem]] = peso;
+                (g->grau[origem])++;
                 if (digrafo == 0)
-                    insereAresta(gr, destino, origem, 1, peso);
+                    insereAresta(g, destino, origem, 1, peso);
                 criou = 1;
             }
         }
@@ -85,15 +87,15 @@ Pode ser usado para :
 
 */
 
-void busca_em_largura_grafo(Grafo *gr, int ini, int *visitado)
+void busca_em_largura_grafo(Grafo *g, int ini, int *visitado)
 {
     int i, vert, Novo_Vertice, cont = 1;
     int *fila, Inicial_fila = 0, Final_fila = 0;
-    for (i = 0; i < gr->nVertices; i++) // preenchendo todos os vertices como não visitados
+    for (i = 0; i < g->nVertices; i++) // preenchendo todos os vertices como não visitados
         visitado[i] = 0;
 
     //criando fila e inserindo ini na fila
-    Novo_Vertice = gr->nVertices;
+    Novo_Vertice = g->nVertices;
     fila = (int *)malloc(Novo_Vertice * sizeof(int)); 
     Final_fila++;
     fila[Final_fila] = ini;
@@ -107,20 +109,20 @@ void busca_em_largura_grafo(Grafo *gr, int ini, int *visitado)
         cont++;
 
         // visita visinhos ainda não visitados e coloca na fila
-        for (i = 0; i < gr->grau[vert]; i++)
+        for (i = 0; i < g->grau[vert]; i++)
         {
-            if (!visitado[gr->arestas[vert][i]])// Ele já foi visitado ?
+            if (!visitado[g->arestas[vert][i]])// Ele já foi visitado ?
             {
                 //colocando todos os vertices não visitados dentro da fila
                 Final_fila = (Final_fila + 1) % Novo_Vertice;
-                fila[Final_fila] = gr->arestas[vert][i];
-                visitado[gr->arestas[vert][i]] = cont;
+                fila[Final_fila] = g->arestas[vert][i];
+                visitado[g->arestas[vert][i]] = cont;
             }
         }
     }
     free(fila);
     //mostrando o grafo 
-    for (i = 0; i < gr->nVertices; i++)
+    for (i = 0; i < g->nVertices; i++)
         printf("%d -> %d\n", i, visitado[i]);
 }
 
@@ -133,38 +135,38 @@ void busca_em_largura_grafo(Grafo *gr, int ini, int *visitado)
 */
 // Função principal de busca em profundidade
 
-void busca_em_profundidade_grafo(Grafo *gr, int ini, int *visitado)
+void busca_em_profundidade_grafo(Grafo *g, int ini, int *visitado)
 {
     int i, cont = 1;
-    for (size_t i = 0; i < gr->nVertices; i++)
+    for (size_t i = 0; i < g->nVertices; i++)
         visitado[i] = 0; // para marca todos como não visitados inicialmente
 
-    func_aux_busca_profundidade(gr, ini, visitado, cont);
+    func_aux_busca_profundidade(g, ini, visitado, cont);
 
-    for (i = 0; i < gr->nVertices; i++)
+    for (i = 0; i < g->nVertices; i++)
         printf("%d -> %d\n", i, visitado[i]);
 }
 
 // função auxiliar da busca em profundidade
-void func_aux_busca_profundidade(Grafo *gr, int ini, int *visitado, int cont)
+void func_aux_busca_profundidade(Grafo *g, int ini, int *visitado, int cont)
 {
     int i;
     visitado[ini] = cont;
 
-    for (size_t i = 0; i < gr->grau[ini]; i++)
+    for (size_t i = 0; i < g->grau[ini]; i++)
     {
-        if (!visitado[gr->arestas[ini][i]]) // ele ja foi visitado?
+        if (!visitado[g->arestas[ini][i]]) // O vertice já foi visitado?
         {
-            func_aux_busca_profundidade(gr, gr->arestas[ini][i], visitado, cont + 1); // chamada recursiva para verificar o próximo vertice
+            func_aux_busca_profundidade(g, g->arestas[ini][i], visitado, cont + 1); // chamada recursiva para verificar o próximo vertice
         }
     };
 }
-
-void mostraGrafo(Grafo *gr)
+// função para mostrar o grafo
+void mostraGrafo(Grafo *g)
 {
     printf("origem \t\t destino \n");
-    for (int i = 0; i < gr->nVertices; i++)
-        for (int d = 0; d < gr->grau[i]; d++)
-            if (gr->arestas[i][d] != 0)
-                printf("%d \t\t %d \n", i, gr->arestas[i][d]);
+    for (int i = 0; i < g->nVertices; i++)
+        for (int d = 0; d < g->grau[i]; d++)
+            if (g->arestas[i][d] != 0)
+                printf("%d \t\t %d \n", i, g->arestas[i][d]);
 }
