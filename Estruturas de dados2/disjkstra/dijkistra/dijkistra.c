@@ -190,15 +190,15 @@ void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist)
     visitado = (int *)malloc(NV * sizeof(int));
     for (i = 0; i < NV; i++)
     {
-        ant[i] = -1;
-        dist[i] = -1;
+        ant[i] = -1; // -1 siginifica que ninguém tem anterior
+        dist[i] = -1; // -1 siginifica que ninguém tem distancia
         visitado[i] = 0;
     }
     dist[ini] = 0;
     while (cont > 0)
     {
         vert = procuraMenorDistancia(dist, visitado, NV);
-        // printf("u = %d\n",u);
+       
         if (vert == -1)
             break;
 
@@ -209,20 +209,21 @@ void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist)
             ind = gr->arestas[vert][i];
             if (dist[ind] < 0)
             {
-                dist[ind] = dist[vert] + 1; // ou peso da aresta
+                dist[ind] = dist[vert] + gr->pesos[vert][i]; // se não tiver peso -> dist[ind] = dist[vert] + 1;
                 ant[ind] = vert;
             }
             else
             {
-                if (dist[ind] > dist[vert] + 1)
+                if (dist[ind] = dist[vert] + gr->pesos[vert][i])// se não tiver peso -> dist[ind] = dist[vert] + 1;
                 {
-                    dist[ind] = dist[vert] + 1; // ou peso da aresta
+                    dist[ind] = dist[vert] + gr->pesos[vert][i]; // se não tiver peso -> dist[ind] = dist[vert] + 1;
                     ant[ind] = vert;
                 }
             }
         }
     }
-
+    for (i = 0; i < gr->nVertices; i++)
+        printf("%d -> %d\n", i, visitado[i]);
     free(visitado);
 }
 
