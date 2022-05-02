@@ -223,7 +223,7 @@ void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist)
         }
     }
     for (i = 0; i < gr->nVertices; i++)
-        printf("%d -> %d\n", i, visitado[i]);
+        printf("%d -> %d\n", i, dist[i]);
     free(visitado);
 }
 
