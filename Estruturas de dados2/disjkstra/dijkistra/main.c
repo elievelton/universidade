@@ -43,9 +43,11 @@ int main()
     insereAresta(gr, 9, 10, ehDigrafo, 26);
     puts("Mostrando o Grafo");
     mostraGrafo(gr);
-    puts("Busca em profundidade");
+    puts("Menor caminho");
     menorCaminho_Grafo(gr,0,ant,dist);
+    
 
 
     liberaGrafo(gr);
     return 0;
+}

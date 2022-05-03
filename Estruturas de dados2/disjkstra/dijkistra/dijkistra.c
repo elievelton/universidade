@@ -67,6 +67,7 @@ int insereAresta(Grafo *gr, int origem, int destino, int digrafo, float peso)
                 gr->arestas[origem][gr->grau[origem]] = destino;
                 if (gr->ehPonderado)
                     gr->pesos[origem][gr->grau[origem]] = peso;
+                    
                 (gr->grau[origem])++;
                 if (digrafo == 0)
                     insereAresta(gr, destino, origem, 1, peso);
@@ -74,6 +75,7 @@ int insereAresta(Grafo *gr, int origem, int destino, int digrafo, float peso)
             }
         }
     }
+    
     return criou;
 }
 
@@ -179,7 +181,11 @@ int procuraMenorDistancia(float *dist, int *visitado, int NV)
                     menor = i;
             }
         }
+        
+        printf("%d\n", visitado[i]);
+        printf("%f\n", dist[i]);
     }
+    printf("Menor :%d\n", menor);
     return menor;
 }
 //Função Dijkistra para procurar o menor caminho
@@ -199,14 +205,18 @@ void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist)
     {
         vert = procuraMenorDistancia(dist, visitado, NV);
        
-        if (vert == -1)
+        if (vert == -1){
+
             break;
+        }
+        
 
         visitado[vert] = 1;
         cont--;
         for (i = 0; i < gr->grau[vert]; i++)
         {
             ind = gr->arestas[vert][i];
+            printf("Passou aquivo");
             if (dist[ind] < 0)
             {
                 dist[ind] = dist[vert] + gr->pesos[vert][i]; // se não tiver peso -> dist[ind] = dist[vert] + 1;
@@ -221,9 +231,9 @@ void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist)
                 }
             }
         }
+                printf("Entrou2\n");
     }
-    for (i = 0; i < gr->nVertices; i++)
-        printf("%d -> %d\n", i, visitado[i]);
+    
     free(visitado);
 }
 
