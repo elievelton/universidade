@@ -6,9 +6,9 @@ int main()
 {
     int ehDigrafo = 1; // ser digrafo significa que não tem caminho de volta , só de ida
     Grafo* gr = cria_Grafo(10, 10, 1);
-    int ant[10]; // mostra quem é o anterior de um vertice
-    float dist[10]; // grava a distanvia do vertice inicial para os proximos vertices
-    int vis[10];
+    int anterior[10]; // mostra quem é o anterior do peso de um vertice
+    float distancia[10]; // grava o peso das distancias
+
     /*
     Substituimos letras por numeros, ficaram da seguinte maneira
     A = 0
@@ -46,9 +46,11 @@ int main()
     imprime_Grafo(gr);
     printf("\nBusca menor caminho \n");
 
-    menorCaminho_Grafo(gr, 0, ant, dist);
+    calcula_Menor_Caminho_noGrato(gr, 0, anterior, distancia);
+    printf("ID  ant  peso\n");
     for(int i=0; i<10; i++)
-        printf("%d: %d -> %f\n",i,ant[i],dist[i]);
+        if(i!=0) //apenas para não mostrar o anterio a primeira verificação
+            printf("%d: %d -> %.2f\n",i,anterior[i],distancia[i]);
 
     libera_Grafo(gr);
     return 0;

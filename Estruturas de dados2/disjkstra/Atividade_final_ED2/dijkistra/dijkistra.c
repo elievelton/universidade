@@ -2,16 +2,22 @@
 #include <stdlib.h>
 #include "dijkistra.h" //inclui os Protótipos
 
+    /* O objetivo desse algoritomo e calcular a menor distancia entre diversas rotas
+        Conhecido tambem como dijkstra essa solução visa simplicar diversos trabalhos
+        que se ultilizam dos grafos
+     */
+
 //Definições do tipo Grafo
 struct grafo{
-    int eh_ponderado; // para saber se tem caminho de ida e volta
+    int eh_ponderado; // um gradfo é podenrado quando suas arestas possuem peso
     int nro_vertices;// numero de vertices
     int grau_max; //o maior tamnho do grafo
-    int** arestas;
+    int** arestas; //As arestas são consideradas as uniões entre os vértices
     float** pesos;// pesos das rotas
-    int* grau;
+    int* grau; //grau de um vértice de um grafo é o número de arestas incidentes para com o vértice
 };
 
+// função para cirar o Grafo, recebe numero de vertices, Grau Máximo e se ele é ponderado ou não
 Grafo* cria_Grafo(int nro_vertices, int grau_max, int eh_ponderado){
     Grafo *gr;
     gr = (Grafo*) malloc(sizeof(struct grafo));
@@ -19,8 +25,8 @@ Grafo* cria_Grafo(int nro_vertices, int grau_max, int eh_ponderado){
         int i;
         gr->nro_vertices = nro_vertices;
         gr->grau_max = grau_max;
-        gr->eh_ponderado = (eh_ponderado != 0)?1:0;
-        gr->grau = (int*) calloc(nro_vertices,sizeof(int));
+        gr->eh_ponderado = (eh_ponderado != 0)?1:0; // operador ternario so para garantir se é ponderado ou não
+        gr->grau = (int*) calloc(nro_vertices,sizeof(int)); // o vetor está sendo setado tudo com zero que idica que ninguem passou por ele
 
         gr->arestas = (int**) malloc(nro_vertices * sizeof(int*));
         for(i=0; i<nro_vertices; i++)
@@ -35,7 +41,7 @@ Grafo* cria_Grafo(int nro_vertices, int grau_max, int eh_ponderado){
     }
     return gr;
 }
-
+// Funão para libera_Grafo
 void libera_Grafo(Grafo* gr){
     if(gr != NULL){
         int i;
@@ -52,7 +58,7 @@ void libera_Grafo(Grafo* gr){
         free(gr);
     }
 }
-
+// Função para inserir arestas: recebe o grafo, ponto de origem, destino se é digrafo e o peso
 int insereAresta(Grafo* gr, int orig, int dest, int eh_digrafo, float peso){
     if(gr == NULL)
         return 0;
@@ -72,12 +78,13 @@ int insereAresta(Grafo* gr, int orig, int dest, int eh_digrafo, float peso){
 }
 
 
-
+//função para imprimir o grafo com seus respectivos pesos
 void imprime_Grafo(Grafo *gr){
     if(gr == NULL)
         return;
 
     int i, j;
+    puts("Imprimindo as rotas com seus pesos...");
     for(i=0; i < gr->nro_vertices; i++){
         printf("%d: ", i);
         for(j=0; j < gr->grau[i]; j++){
@@ -90,8 +97,8 @@ void imprime_Grafo(Grafo *gr){
     }
 }
 
-
-int procuraMenorDistancia(float *dist, int *visitado, int NV){
+// função retorna um menor caminho em pontos nao visitados
+int procurarDistancia(float *dist, int *visitado, int NV){
     int i, menor = -1, primeiro = 1;
     for(i=0; i < NV; i++){
         if(dist[i] >= 0 && visitado[i] == 0){
@@ -106,34 +113,38 @@ int procuraMenorDistancia(float *dist, int *visitado, int NV){
     }
     return menor;
 }
-
-void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist){
-    int i, cont, NV, ind, *visitado, vert;
+// Busca o menor caminho: recebe o grafo, o inicial, o anterior e uma lista para armazenar os pesos
+void calcula_Menor_Caminho_noGrato(Grafo *gr, int ini, int *ant, float *dist){
+    int i, cont, NV, ind, *visitado, temp_vertice;
     cont = NV = gr->nro_vertices;
     visitado = (int*) malloc(NV * sizeof(int));
     for(i=0; i < NV; i++){
-        ant[i] = -1;
-        dist[i] = -1;
-        visitado[i] = 0;
+        ant[i] = -1; // usando para mostrar que o anterior não foi visitado
+        dist[i] = -1; // seta -1 par aindicar que não temos pesos adicionados
+        visitado[i] = 0; // quando for visitado ele sera setado 1
     }
     dist[ini] = 0;
     while(cont > 0){
-        vert = procuraMenorDistancia(dist, visitado, NV);
-        //printf("u = %d\n",u);
-        if(vert == -1)
+        temp_vertice = procurarDistancia(dist, visitado, NV);
+        if(temp_vertice == -1)// se receber -1 ele sai fora do while
             break;
 
-        visitado[vert] = 1;
+        visitado[temp_vertice] = 1;
         cont--;
-        for(i=0; i<gr->grau[vert]; i++){
-            ind = gr->arestas[vert][i];
+        for(i=0; i<gr->grau[temp_vertice]; i++){
+            ind = gr->arestas[temp_vertice][i];
             if(dist[ind] < 0){
-               dist[ind] = dist[vert] + gr->pesos[vert][i];//fazendo a soma dos pesos
-               ant[ind] = vert;
+               dist[ind] = dist[temp_vertice] + gr->pesos[temp_vertice][i];//fazendo a soma dos pesos
+               ant[ind] = temp_vertice;
             }else{
-                if(dist[ind] > dist[vert] + gr->pesos[vert][i]){
-                    dist[ind] = dist[vert] + gr->pesos[vert][i];//fazendo a soma dos pesos
-                    ant[ind] = vert;
+                
+                    /* Se o calculo não houver pesos basta troca 
+                        + gr->pesos[temp_vertice][i] da linha 137, 145 e 146 por +1                    
+                     */                
+                
+                if(dist[ind] > dist[temp_vertice] + gr->pesos[temp_vertice][i]){
+                    dist[ind] = dist[temp_vertice] + gr->pesos[temp_vertice][i];//fazendo a soma dos pesos
+                    ant[ind] = temp_vertice;
                 }
             }
         }
@@ -141,55 +152,3 @@ void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist){
 
     free(visitado);
 }
-
-
-
-void buscaProfundidade(Grafo *gr, int ini, int *visitado, int cont){
-    int i;
-    visitado[ini] = cont;
-    for(i=0; i<gr->grau[ini]; i++){
-        if(!visitado[gr->arestas[ini][i]])
-            buscaProfundidade(gr,gr->arestas[ini][i],visitado,cont+1);
-    }
-}
-void buscaProfundidade_Grafo(Grafo *gr, int ini, int *visitado){
-    int i, cont = 1;
-    for(i=0; i<gr->nro_vertices; i++)
-        visitado[i] = 0;
-    buscaProfundidade(gr,ini,visitado,cont);
-
-    for(i=0; i < gr->nro_vertices; i++)
-        printf("%d -> %d\n",i,visitado[i]);
-}
-
-void buscaLargura_Grafo(Grafo *gr, int ini, int *visitado){
-    int i, vert, NV, cont = 1;
-    int *fila, IF = 0, FF = 0;
-    for(i=0; i<gr->nro_vertices; i++)
-        visitado[i] = 0;
-
-    NV = gr->nro_vertices;
-    fila = (int*) malloc(NV * sizeof(int));
-    FF++;
-    fila[FF] = ini;
-    visitado[ini] = cont;
-    while(IF != FF){
-        IF = (IF + 1) % NV;
-        vert = fila[IF];
-        cont++;
-        for(i=0; i<gr->grau[vert]; i++){
-            if(!visitado[gr->arestas[vert][i]]){
-                FF = (FF + 1) % NV;
-                fila[FF] = gr->arestas[vert][i];
-                visitado[gr->arestas[vert][i]] = cont;
-            }
-        }
-    }
-    free(fila);
-    for(i=0; i < gr->nro_vertices; i++)
-        printf("%d -> %d\n",i,visitado[i]);
-}
-
-
-
-
