@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "dijkistra.h" //inclui os Prot�tipos
+#include "dijkistra.h" //inclui os Protótipos
 
-//Defini��o do tipo Grafo
+//Definições do tipo Grafo
 struct grafo{
-    int eh_ponderado;
-    int nro_vertices;
-    int grau_max;
+    int eh_ponderado; // para saber se tem caminho de ida e volta
+    int nro_vertices;// numero de vertices
+    int grau_max; //o maior tamnho do grafo
     int** arestas;
-    float** pesos;
+    float** pesos;// pesos das rotas
     int* grau;
 };
 
@@ -128,11 +128,11 @@ void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist){
         for(i=0; i<gr->grau[vert]; i++){
             ind = gr->arestas[vert][i];
             if(dist[ind] < 0){
-               dist[ind] = dist[vert] + gr->pesos[vert][i];//ou peso da aresta
+               dist[ind] = dist[vert] + gr->pesos[vert][i];//fazendo a soma dos pesos
                ant[ind] = vert;
             }else{
                 if(dist[ind] > dist[vert] + gr->pesos[vert][i]){
-                    dist[ind] = dist[vert] + gr->pesos[vert][i];//ou peso da aresta
+                    dist[ind] = dist[vert] + gr->pesos[vert][i];//fazendo a soma dos pesos
                     ant[ind] = vert;
                 }
             }

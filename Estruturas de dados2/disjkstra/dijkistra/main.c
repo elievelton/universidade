@@ -22,6 +22,7 @@ int main()
     I = 8
     J = 9
 */
+//Inserindo conforme o exemplo passado para este trabalho
     insereAresta(gr, 0, 1, ehDigrafo, 60);
     insereAresta(gr, 0, 2, ehDigrafo, 54);
     insereAresta(gr, 0, 3, ehDigrafo, 42);
@@ -43,7 +44,7 @@ int main()
     insereAresta(gr, 8, 9, ehDigrafo, 26);
 
     imprime_Grafo(gr);
-    printf("\nBusca \n");
+    printf("\nBusca menor caminho \n");
 
     menorCaminho_Grafo(gr, 0, ant, dist);
     for(int i=0; i<10; i++)
