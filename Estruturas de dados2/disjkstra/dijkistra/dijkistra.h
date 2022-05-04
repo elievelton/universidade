@@ -1,11 +1,15 @@
-#include <stdio.h>
-typedef struct grafos Grafo;
-Grafo *criaGrafo(int Vertices, int ehPonderado);
-void liberaGrafo(Grafo *gr);
-int insereAresta(Grafo *gr, int origem, int destino, int digrafo, float peso);
-void busca_em_largura_grafo(Grafo *gr, int ini, int *visitado);
-void busca_em_profundidade_grafo(Grafo *gr, int ini, int *visitado);
-void func_aux_busca_profundidade(Grafo *gr, int ini, int *visitado, int cont);
-int procuraMenorDistancia(float *dist, int *visitado, int NV);
-void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist);
-void mostraGrafo(Grafo *gr);
+//Arquivo Grafo.h
+
+typedef struct grafo Grafo;
+
+Grafo* cria_Grafo(int nro_vertices, int grau_max, int eh_ponderado);
+void libera_Grafo(Grafo* gr);
+int insereAresta(Grafo* gr, int orig, int dest, int eh_digrafo, float peso);
+int removeAresta(Grafo* gr, int orig, int dest, int eh_digrafo);
+
+
+void buscaProfundidade_Grafo(Grafo *gr, int ini, int *visitado);
+void buscaLargura_Grafo(Grafo *gr, int ini, int *visitado);
+void menorCaminho_Grafo(Grafo *gr, int ini, int *antecessor, float *distancia);
+
+void imprime_Grafo(Grafo *gr);
